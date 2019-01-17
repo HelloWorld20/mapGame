@@ -1,0 +1,160 @@
+{
+    "game": {
+    },
+    "platform": {
+        "game": {
+
+        },
+        "text": {
+            "content": {
+                "name": "发起文案",
+                "text": "小恐龙发起了助力活动，24小时内完成300的助力目标，就能赢取豪华大奖。小伙伴们快快给力啊",
+                "type":"textarea",
+                "toggle":"show",
+                "note":"若需要插入目标，请输入{goal};若需要插入发起者的昵称，请输入{name}。",
+                "maxlength": 50
+            },
+            "valueDesc": {
+                "name": "助力文案",
+                "text": "我发动了九牛二虎之力，增加了{number}增加能量！",
+                "type":"textarea",
+                "note":"若需要插入助力的数字，请输入{number}。",
+                "maxlength": 50
+            }
+        },
+        "button": {
+            "helpMyselfCd": {
+                "name": "自己助力",
+                "text": "助力",
+                "background": "#EA474E",
+                "maxlength": 5
+            },
+            "rankBtn": {
+                "name": "助力动态",
+                "text": "助力动态",
+                "background": "#FEB752",
+                "maxlength": 5
+            },
+            "friendHelpBtn": {
+                "name": "请好友帮忙",
+                "text": "请好友帮忙",
+                "background": "#E9464C",
+                "maxlength": 5
+            }
+        },
+        "help-menu": {
+            "button": {
+                "helpHim": {
+                    "name": "帮忙助力",
+                    "text": "为TA助力",
+                    "background": "#EA474E",
+                    "maxlength": 5
+                },
+                "meTooBtn": {
+                    "name": "我也要发起",
+                    "text": "我也要发起",
+                    "background": "#E9464C",
+                    "maxlength": 5
+                }
+            }
+        },
+        "ext_info": {
+            "disable": {
+                "menu": ["over", "share"]
+            }
+        }
+    },
+    "text": {
+        "game-title-text": "好友助力赢大奖",
+        "brand-text": "24好玩",
+        "activity-text": "设定助力目标，邀请小伙伴们帮忙助力，在规定的时间内，达到目标即可完成。",
+        "prompt-text": "24好玩",
+        "shareLabel": "邀请好友来帮忙~",
+        "gift-text": "该字段已不使用",
+        "game-wechat-text": "",
+        "challenge": "我也挑战一下",
+        "game-rule-btn": "活动规则",
+        "share-btn": "分享给好友",
+        "rank-btn": "排行榜",
+        "start": "开始游戏",
+        "play-again-btn": "再玩一次"
+    },
+    "style": {
+        "loadingColor": "#fdffc6",
+        "loadingBanner": "//24haowan-cdn.shanyougame.com/new_platform/image/loadingBanner.png",
+        "barColor": "#1abc9c",
+        "action-time-label": "#ffffff",
+        "activity-text": "#333333",
+        "shareLabel": "#ffffff",
+        "receive-text": "#333333",
+        "prize-box-img": "//24haowan-cdn.shanyougame.com/new_platform/image/prize.svg",
+        "receive-box-img": "//24haowan-cdn.shanyougame.com/new_platform/image/prize.svg",
+        "share-text-color": "#ffffff",
+        "best-score-text": "#ffffff",
+        "score-text": "#ffffff",
+        "brand": {
+            "brand-text": "#ffffff",
+            "brand-icon": "//24haowan-cdn.shanyougame.com/new_platform/image/bottomIcon.png"
+        },
+        "rankLogo": "//24haowan-cdn.shanyougame.com/new_platform/image/rankTop.svg",
+        "game-title-color": "#ffffff",
+        "banner": {
+            "share-sign-in": "/static_resource/assets/images/logo.png",
+            "help-menu": "/static_resource/assets/images/logo.png",
+            "size": "128px*128px"
+        },
+        "background": {
+            "start-menu": "/static_resource/assets/images/background-loading.png",
+            "game-over-menu": "/static_resource/assets/images/background-loading.png",
+            "share-sign-in": "/static_resource/assets/images/background-loading.png",
+            "help-menu": "/static_resource/assets/images/background-loading.png"
+        },
+        "color": {
+            "main": "#1db494",
+            "deputy": "#ffb837",
+            "main-shadow": "#1aa98b",
+            "deputy-shadow": "#eb940b"
+        }
+    },
+    "message": {
+        "msg": {},
+        "share": {
+            "link": "share",
+            "union": "yes",
+            "title-default": "举起你们的双手，把你们的元气借给我。",
+            "desc-default": "好友助力赢大礼，就差你的助力了，快来帮忙！",
+            "title": "举起你们的双手，把你们的元气借给我。",
+            "desc": "好友助力赢大礼，就差你的助力了，快来帮忙！",
+            "pic": "/static_resource/assets/images/share.png"
+        }
+    },
+    "mobileOnly": false,
+    "bottom-link": "https://mp.weixin.qq.com/s?__biz=MzI1MDA3NDY1OQ==&mid=2653316845&idx=1&sn=e2cc3c9e14d3e7fcd358161bd9ef7b2c&chksm=f25505a1c5228cb781cbaba27f886a462254acb2130660d6041abea6a4067f7e90f470c2aa79#rd",
+    "bottom-show": true,
+    "bottom-link-set": true,
+    "activity-qrcode-show": true,
+    "activity-qrcode": "//24haowan-cdn.shanyougame.com/game_tpl/activity-qrcode.jpg",
+    "disable-rank": false,
+    "activity-gift-show": "yes",
+    "activity-gift-num-show": "yes",
+    "game-title-img-show": true,
+    "game-title-img": "/static_resource/assets/images/background-loading.png",
+    "game-title-img-size": "580px*112px",
+    "page-desc": {
+        "basic": "",
+        "loading": "",
+        "start": "",
+        "game": "",
+        "over": "",
+        "friend": "好友点击分享链接进入看到的页面，可以选择帮忙助力，或者发起自己的活动。",
+        "share": ""
+    },
+    "activity-text-auto-show": true,
+    "db_info": {
+        "name": "非标组开发模板",
+        "describe": "展示型",
+        "type": 3,
+        "lable": "生成|测试",
+        "game_img": "/static_resource/assets/images/好友助力赢大奖.png"
+    }
+}
