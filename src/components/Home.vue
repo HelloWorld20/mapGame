@@ -1,5 +1,5 @@
 <template>
-<div class="home">
+<div class="home" ref="scroll" freeScroll="true">
     <div class="map" ref='map'></div>
     <div class="control">
         <div class="control--pre" @click="preStep">上一步</div>
@@ -11,6 +11,8 @@
 <script>
 import { game } from '@/config/config';
 import { scrollTo } from '@/config/util';
+import VueScroll from 'better-scroll'
+
 let gameStep = 0;
 let gameLen = game.length;
 export default {
@@ -20,12 +22,14 @@ export default {
         }
     },
     mounted() {
-        // let config = game[gameStep++ % gameLen];
-        //     scrollTo(config.position[0], config.position[1])
-        // setInterval(() => {
-        //     let config = game[gameStep++ % gameLen];
-        //     scrollTo(config.position[0], config.position[1])
-        // }, 2000)
+        let scroll = new VueScroll(this.$refs.scroll, {
+            probeType: 3,
+            eventPassthrough: 'vertical'
+            // freeScroll: true
+        })
+        scroll.on('scroll', () => {
+            console.log('scroll')
+        })
     },
     methods: {
         preStep() {
@@ -49,7 +53,7 @@ export default {
     position: relative;
     width: 100vw;
     height: 100vh;
-    overflow: auto;
+    overflow: hidden;
 }
 .map{
     position: relative;
