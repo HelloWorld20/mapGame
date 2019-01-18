@@ -2,6 +2,7 @@ import Vue from 'vue';
 const EASE_STEP = 30;
 const SCROLL_DURATION = 500;
 let srollTimer;
+let lastPostion = [0, 0];
 
 export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent);
 
@@ -42,7 +43,10 @@ export const scrollTo = (el, x, y) => {
     // }, SCROLL_DURATION / EASE_STEP)
 
     // window.scrollTo(x, y);
-    console.log(x, y)
+
+    console.log(getComputedStyle(el).transform)
+    console.log(el.style.transform)
+
     el.style.transform = `translate(${-x}px, ${-y}px)`
 }
 
