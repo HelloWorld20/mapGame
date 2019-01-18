@@ -4,19 +4,19 @@ export const game = [
         img: 'psb0.jpg'
     },
     {
-        position: [470, 700],
+        position: [2470, 1700],
         img: 'psb1.jpg'
     },
     {
-        position: [879, 1512],
+        position: [2879, 1212],
         img: 'psb2.jpg'
     },
     {
-        position: [1423, 980],
+        position: [1423, 3980],
         img: 'psb3.jpg'
     },
     {
-        position: [567, 1252],
+        position: [3567, 1252],
         img: 'psb4.jpg'
     }
 ]

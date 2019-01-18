@@ -16,6 +16,7 @@
                 <div
                     class="map--layer-item animated"
                     :Key=key
+                    ref='item'
                     :style="{
                         'background-image': `url(${require('../assets/img/'+ item.img)})`,
                         left: item.position[0] + 'px',
@@ -50,13 +51,8 @@ export default {
             currentOffset: [0, 0]
         }
     },
-    // watch: {
-    //     gameStep(val) {
-    //         console.log(val);
-    //     }
-    // },
     mounted() {
-
+        this.nextStep();
     },
     methods: {
         preStep() {
@@ -67,12 +63,10 @@ export default {
             let config = game[this.gameStep % gameLen];
             scrollTo({
                 el: this.$refs.scroll,
+                target: this.$refs.item[this.gameStep],
                 x: config.position[0],
                 y: config.position[1],
                 scale: this.scale
-            }).then(res => {
-                this.currentOffset = res;
-                console.log(res)
             })
         },
         nextStep() {
@@ -85,23 +79,27 @@ export default {
             let config = game[this.gameStep % gameLen];
             scrollTo({
                 el: this.$refs.scroll,
+                target: this.$refs.item[this.gameStep],
                 x: config.position[0],
                 y: config.position[1],
                 scale: this.scale
-            }).then(res => {
-                this.currentOffset = res;
-                console.log(res)
             })
         },
         zoom() {
-            this.scale = this.scale === 1 ? 0.4 : 1;
+            let computedScale = this.scale === 1 ? 0.4 : 1;
             let config = game[this.gameStep % gameLen];
+
             scrollTo({
                 el: this.$refs.scroll,
+                target: this.$refs.item[this.gameStep],
                 x: config.position[0],
                 y: config.position[1],
-                scale: this.scale,
+                // x: this.$refs.scroll.scrollLeft,
+                // y: this.$refs.scroll.scrollTop,
+                scale: computedScale,
                 animate: false
+            }).then(res => {
+                this.scale = computedScale;
             })
 
         }
@@ -115,6 +113,7 @@ export default {
     width: 100vw;
     height: 100vh;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
     // perspective: 100px;
 }
 .map{
@@ -137,6 +136,7 @@ export default {
             height: 100px;
             position: absolute;
             transform: translate(-50%, -50%);
+            animation-delay: .5s;
         }
     }
 }
