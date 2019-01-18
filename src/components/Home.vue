@@ -7,8 +7,8 @@
             }">
         <div class="map--active">
             <transition
-                enter-active-class="fadeIn"
-                leave-active-class="fadeOut"
+                enter-active-class="bounceIn"
+                leave-active-class="bounceOut"
                 v-for="(item, key) in game"
                 :Key=key
             >
@@ -213,7 +213,7 @@ export default {
             width: 100px;
             height: 100px;
             position: absolute;
-            transform: translate(-50%, -50%);
+            // transform: translate(-50%, -50%);
             animation-delay: .5s;
         }
     }
