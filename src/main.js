@@ -10,26 +10,26 @@ import { isWeixinBrowser } from './config/util';
 
 Vue.config.productionTip = false;
 
-if (isWeixinBrowser()) {
-  // 微信环境下配置微信权限 需要上到平台才能正常调试微信接口
-	sdk.getWxSignPackage(sdk.configWx.bind(sdk));
-	sdk.setWxShare();
-}
+// if (isWeixinBrowser()) {
+//   // 微信环境下配置微信权限 需要上到平台才能正常调试微信接口
+// 	sdk.getWxSignPackage(sdk.configWx.bind(sdk));
+// 	sdk.setWxShare();
+// }
 
 // hwlever 文档详见 https://github.com/HelloWorld20/hwLever
-hwlever.config({
-	cdn: '//24haowan-cdn.shanyougame.com/public/js/vconsole.min.js',
-	entry: 'EasterEgg',
-	vueObj: Vue,
-	debug: process.env.NODE_ENV === 'development',
-	ravenId: '//56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
-	// extraConf: {
-	// 	tags: {
-	// 		from: 'hwlever online demo'
-	// 	}
-	// },
-	// type: ['touch', 'click', 'swipe', 'shake']
-});
+// hwlever.config({
+// 	cdn: '//24haowan-cdn.shanyougame.com/public/js/vconsole.min.js',
+// 	entry: 'EasterEgg',
+// 	vueObj: Vue,
+// 	debug: process.env.NODE_ENV === 'development',
+// 	ravenId: '//56d67d26f9854c21a1f8e7b83854fecd@sentry.24haowan.com/12',
+// 	// extraConf: {
+// 	// 	tags: {
+// 	// 		from: 'hwlever online demo'
+// 	// 	}
+// 	// },
+// 	// type: ['touch', 'click', 'swipe', 'shake']
+// });
 
 
 /* eslint-disable no-new */
