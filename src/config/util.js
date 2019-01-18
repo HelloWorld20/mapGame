@@ -29,14 +29,12 @@ export const scrollTo = ({el, x, y, scale = 1, animate = true, target}) => {
     let targetHeight;
 
 
-
-    // var coords = { x: 0, y: 0 }; // Start at (0, 0)
     let coords = {x: lastPosition[0], y: lastPosition[1]}
     return new Promise(resolve => {
         setTimeout(() => {
             targetWidth = target.offsetWidth/2 * scale;
             targetHeight = target.offsetHeight/2 * scale;
-            console.log(targetWidth, targetHeight)
+
             x = x + targetWidth;
             y = y + targetHeight;
 
@@ -45,11 +43,6 @@ export const scrollTo = ({el, x, y, scale = 1, animate = true, target}) => {
                 .to({ x, y }, 500) // Move to (300, 200) in 1 second.
                 .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
                 .onUpdate(function() { // Called after tween.js updates 'coords'.
-                    // Move 'box' to the position described by 'coords' with a CSS translation.
-                    // box.style.setProperty('transform', 'translate(' + coords.x + 'px, ' + coords.y + 'px)');
-                    // el.style.transform = `translate(${-coords.x}px, ${-coords.y}px)`
-                    // el.scrollTop = -coords.y;
-                    // el.scrollLeft = -coords.x;
                     el.scrollTo(coords.x, coords.y)
                 })
                 .onComplete(function() {
@@ -62,7 +55,6 @@ export const scrollTo = ({el, x, y, scale = 1, animate = true, target}) => {
                 resolve([x, y])
             }
         }, 0)
-
 
     })
 

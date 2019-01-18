@@ -96,24 +96,6 @@ export default {
     },
     mounted() {
         this.nextStep();
-        // setTimeout(() =>{
-        //     this.hasLine = false;
-        //     console.log('flse')
-        // }, 2000)
-    },
-    computed: {
-        // hasLine() {
-        //     return this.activeLayer.has('line')
-        // },
-        // hasPic() {
-        //     return this.activeLayer.has('pic')
-        // },
-        // hasText() {
-        //     return this.activeLayer.has('text')
-        // },
-        // hasPoint() {
-        //     return this.activeLayer.has('point')
-        // }
     },
     methods: {
         preStep() {
