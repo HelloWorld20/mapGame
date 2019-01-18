@@ -8,6 +8,8 @@ import sdk from './config/sdk';
 import { isWeixinBrowser } from './config/util';
 
 
+require('@/assets/animate.css')
+
 Vue.config.productionTip = false;
 
 // if (isWeixinBrowser()) {

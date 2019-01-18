@@ -1,6 +1,7 @@
 export const game = [
     {
         position: [100, 200],
+        img: 'map.jpeg'
     },
     {
         position: [300, 700],
