@@ -1,19 +1,23 @@
 export const game = [
     {
-        position: [100, 200],
-        img: 'map.jpeg'
+        position: [1000, 2000],
+        img: 'psb0.jpg'
     },
     {
-        position: [300, 700],
+        position: [470, 700],
+        img: 'psb1.jpg'
     },
     {
         position: [879, 1512],
+        img: 'psb2.jpg'
     },
     {
-        position: [1423, 98],
+        position: [1423, 980],
+        img: 'psb3.jpg'
     },
     {
         position: [567, 1252],
+        img: 'psb4.jpg'
     }
 ]
 export default {

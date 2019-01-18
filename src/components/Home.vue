@@ -1,7 +1,10 @@
 <template>
-<div class="home" ref="scroll" :freeScroll="true">
+<div class="home" ref="scroll">
     <div class="map" ref='map'
-        :style="{'background-image': `url(${require('../assets/img/map.jpg')})`}">
+        :style="{
+            'background-image': `url(${require('../assets/img/map.jpg')})`,
+            transform: `scale(${scale}, ${scale})`
+            }">
         <div class="map--layer">
             <transition
                 enter-active-class="fadeIn"
@@ -9,14 +12,14 @@
                 v-for="(item, key) in game"
                 :Key=key
             >
+                <!-- transform: `translate(${(innerWidth/2) * (1/scale) - 50}px, ${(innerHeight/2) * (1/scale) - 50}px)`, -->
                 <div
-                    class="map--layer-item animated faster"
+                    class="map--layer-item animated"
                     :Key=key
                     :style="{
-                        'background-image': `url(${require('../assets/img/share.png')})`,
+                        'background-image': `url(${require('../assets/img/'+ item.img)})`,
                         left: item.position[0] + 'px',
                         top: item.position[1] + 'px',
-                        transform: `translate(${innerWidth/2 - 50}px, ${innerHeight/2 - 50}px)`,
                         }"
                     v-show="gameStep === key"
                 ></div>
@@ -26,6 +29,7 @@
 
     <div class="control">
         <div class="control--pre" @touchstart="preStep">上一步</div>
+        <div class="control--zoom" @touchstart="zoom">缩放</div>
         <div class="control--next" @touchstart="nextStep">下一步</div>
     </div>
 </div>
@@ -36,49 +40,23 @@ import { game } from '@/config/config';
 import { scrollTo } from '@/config/util';
 import VueScroll from 'better-scroll'
 
-// let gameStep = 0;
-let gameLen = game.length;
-let scroller;
+let gameLen = game.length;  // 游戏配置长度
 export default {
     data() {
         return {
-            game,
-            innerWidth: window.innerWidth,
-            innerHeight: window.innerHeight,
-            gameStep: 0
+            game,   // 游戏配置
+            gameStep: 0,    // 当前游戏步骤
+            scale: 0.6,    // 地图缩放比例
+            currentOffset: [0, 0]
         }
     },
-    watch: {
-        gameStep(val) {
-            console.log(val);
-        }
-    },
+    // watch: {
+    //     gameStep(val) {
+    //         console.log(val);
+    //     }
+    // },
     mounted() {
-        console.log('../assets/img/' + 'map.jpeg')
-        // scroller = new VueScroll(this.$refs.scroll, {
-        //     freeScroll: true,
-        //     scrollbar: {
-        //         fade: false,
-        //         interactive: true
-        //     },
-        //     bounce: {
-        //         bottom: false,
-        //         left: false,
-        //         right: false,
-        //         top: false
-        //     },
-        //     zoom: true,
-        //     mouseWheel: true,
-        // })
-        // window.s = scroller;
 
-        // setTimeout(() => {
-        //     scroller.scrollTo(-500, -600, 500)
-        // }, 1000)
-
-        // scroller.on('scroll', () => {
-        //     console.log('scroll')
-        // })
     },
     methods: {
         preStep() {
@@ -87,10 +65,15 @@ export default {
 
             if (this.gameStep === this.gameStep-1) this.gameStep = 0
             let config = game[this.gameStep % gameLen];
-            scrollTo(this.$refs.map, config.position[0], config.position[1])
-            // console.log(-1 * config.position[0], -1 * config.position[1])
-            // scroller.scrollTo(-1 * config.position[0], -1 * config.position[1], 500)
-            // scroller.scrollTo(0, -1 * config.position[1], 500)
+            scrollTo({
+                el: this.$refs.scroll,
+                x: config.position[0],
+                y: config.position[1],
+                scale: this.scale
+            }).then(res => {
+                this.currentOffset = res;
+                console.log(res)
+            })
         },
         nextStep() {
 
@@ -98,11 +81,29 @@ export default {
 
             if (this.gameStep === -1) this.gameStep = gameLen-1
 
-           // console.log(-1 * config.position[0], -1 * config.position[1])
+            // console.log(-1 * config.position[0], -1 * config.position[1])
             let config = game[this.gameStep % gameLen];
-           scrollTo(this.$refs.map, config.position[0], config.position[1])
-            // scroller.scrollTo(-1 * config.position[0], -1 * config.position[1], 500)
-            // scroller.scrollTo(0, -1 * config.position[1], 500)
+            scrollTo({
+                el: this.$refs.scroll,
+                x: config.position[0],
+                y: config.position[1],
+                scale: this.scale
+            }).then(res => {
+                this.currentOffset = res;
+                console.log(res)
+            })
+        },
+        zoom() {
+            this.scale = this.scale === 1 ? 0.4 : 1;
+            let config = game[this.gameStep % gameLen];
+            scrollTo({
+                el: this.$refs.scroll,
+                x: config.position[0],
+                y: config.position[1],
+                scale: this.scale,
+                animate: false
+            })
+
         }
     }
 }
@@ -113,13 +114,15 @@ export default {
     position: relative;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    overflow: auto;
+    // perspective: 100px;
 }
 .map{
     position: relative;
     width: 6000px;
     height: 4500px;
     z-index: 1;
+    transform-origin: 0 0;
     // background-image: url('../assets/img/map.jpg');
     background-size: 100% 100%;
     background-position: center;
@@ -129,13 +132,11 @@ export default {
         position: absolute;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.2);
-
         &-item{
             width: 100px;
             height: 100px;
             position: absolute;
-
+            transform: translate(-50%, -50%);
         }
     }
 }

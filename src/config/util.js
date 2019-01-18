@@ -2,53 +2,56 @@ import Vue from 'vue';
 const EASE_STEP = 30;
 const SCROLL_DURATION = 500;
 let srollTimer;
-let lastPostion = [0, 0];
+let lastPosition = [0, 0];
+let offsetWidth = window.innerWidth/2;
+let offsetHeight = window.innerHeight/2;
 
+function animate(time) {
+    requestAnimationFrame(animate);
+    TWEEN.update(time);
+}
+requestAnimationFrame(animate);
 
 export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent);
 
 export const bus = new Vue();
 
-export const scrollTo = (el, x, y) => {
+export const scrollTo = ({el, x, y, scale = 1, animate = true}) => {
 
-    // let originX = window.scrollX;
-    // let originY = window.scrollY;
+    x = x * scale;
+    y = y * scale;
 
-    // let offsetX = x - originX;
-    // let offsetY = y - originY;
+    x = x - offsetWidth;
+    y = y - offsetHeight;
 
-    // if (offsetX === 0 || offsetY === 0) return;
+    lastPosition = [el.scrollLeft, el.scrollTop]
 
-    // let easeArr = [];
+    // var coords = { x: 0, y: 0 }; // Start at (0, 0)
+    let coords = {x: lastPosition[0], y: lastPosition[1]}
+    return new Promise(resolve => {
+        if (animate) {
+            var tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
+            .to({ x, y }, 500) // Move to (300, 200) in 1 second.
+            .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+            .onUpdate(function() { // Called after tween.js updates 'coords'.
+                // Move 'box' to the position described by 'coords' with a CSS translation.
+                // box.style.setProperty('transform', 'translate(' + coords.x + 'px, ' + coords.y + 'px)');
+                // el.style.transform = `translate(${-coords.x}px, ${-coords.y}px)`
+                // el.scrollTop = -coords.y;
+                // el.scrollLeft = -coords.x;
+                el.scrollTo(coords.x, coords.y)
+            })
+            .onComplete(function() {
+                lastPosition = [x, y];
+                resolve(lastPosition)
+            })
+            .start();
+        } else {
+            el.scrollTo(x, y)
+            resolve([x, y])
+        }
 
-    // let stepX = EASE_STEP/offsetX;
-    // let stepY = EASE_STEP/offsetY;
+    })
 
-    // for(let i = 0; i < EASE_STEP; i++) {
-    //     easeArr.push({
-    //         x: stepX*(i+1),
-    //         y: stepY*(i+1)
-    //     });
-    // }
-    // if (isNaN(offsetX) || isNaN(offsetY)) return;
-
-    // srollTimer = setInterval(() => {
-    //     if (easeArr.length > 0) {
-    //         let currentStep = easeArr.shift()
-    //         // console.log('currentStep', currentStep)
-    //         window.scrollTo(window.scrollX + currentStep.x, window.scrollY + currentStep.y)
-    //     } else {
-    //         clearInterval(srollTimer)
-    //         console.log(window.scrollX, window.scrollY, x, y)
-    //     }
-    // }, SCROLL_DURATION / EASE_STEP)
-
-    // window.scrollTo(x, y);
-
-    console.log(getComputedStyle(el).transform)
-    console.log(el.style.transform)
-
-
-    el.style.transform = `translate(${-x}px, ${-y}px)`
 }
 
