@@ -5,7 +5,7 @@
             'background-image': `url(${require('../assets/img/map.jpg')})`,
             transform: `scale(${scale}, ${scale})`
             }">
-        <div class="map--layer">
+        <div class="map--active">
             <transition
                 enter-active-class="fadeIn"
                 leave-active-class="fadeOut"
@@ -14,7 +14,7 @@
             >
                 <!-- transform: `translate(${(innerWidth/2) * (1/scale) - 50}px, ${(innerHeight/2) * (1/scale) - 50}px)`, -->
                 <div
-                    class="map--layer-item animated"
+                    class="map--active-item map--active-map animated"
                     :Key=key
                     ref='item'
                     :style="{
@@ -26,12 +26,48 @@
                 ></div>
             </transition>
         </div>
+        <div class="map--layer">
+            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
+                <div class="map--layer-line" v-show="hasline"></div>
+            </transition>
+            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
+                <div class="map--layer-point" v-show="haspoint"></div>
+            </transition>
+            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
+                <div class="map--layer-text" v-show="hastext"></div>
+            </transition>
+            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
+                <div class="map--layer-pic" v-show="haspic"></div>
+            </transition>
+        </div>
+
     </div>
 
     <div class="control">
-        <div class="control--pre" @touchstart="preStep">上一步</div>
-        <div class="control--zoom" @touchstart="zoom">缩放</div>
-        <div class="control--next" @touchstart="nextStep">下一步</div>
+        <div class="control--handle">
+            <div class="control--handle-pre" @touchstart="preStep">上一步</div>
+            <div class="control--handle-zoom" @touchstart="zoomIn">放大</div>
+            <div class="control--handle-zoom" @touchstart="zoomOut">缩小</div>
+            <div class="control--handle-next" @touchstart="nextStep">下一步</div>
+        </div>
+        <div class="control--tap">
+            <div class="control--tab-1"
+                :class="{active: hasline}"
+                @click="switchLayer('line')"
+            >1</div>
+            <div class="control--tab-2"
+                :class="{active: haspoint}"
+                @click="switchLayer('point')"
+            >2</div>
+            <div class="control--tab-3"
+                :class="{active: hastext}"
+                @click="switchLayer('text')"
+            >3</div>
+            <div class="control--tab-4"
+                :class="{active: haspic}"
+                @click="switchLayer('pic')"
+            >4</div>
+        </div>
     </div>
 </div>
 </template>
@@ -42,24 +78,47 @@ import { scrollTo } from '@/config/util';
 import VueScroll from 'better-scroll'
 
 let gameLen = game.length;  // 游戏配置长度
+const MAX_SCALE = 1;
+const MIN_SCALE = 0.4;
 export default {
     data() {
         return {
             game,   // 游戏配置
             gameStep: 0,    // 当前游戏步骤
             scale: 0.6,    // 地图缩放比例
-            currentOffset: [0, 0]
+            currentOffset: [0, 0],
+            activeLayer: new Set(['line', 'point', 'text', 'pic']),
+            hasline: true,
+            haspic: true,
+            hastext: true,
+            haspoint: true,
         }
     },
     mounted() {
         this.nextStep();
+        // setTimeout(() =>{
+        //     this.hasLine = false;
+        //     console.log('flse')
+        // }, 2000)
+    },
+    computed: {
+        // hasLine() {
+        //     return this.activeLayer.has('line')
+        // },
+        // hasPic() {
+        //     return this.activeLayer.has('pic')
+        // },
+        // hasText() {
+        //     return this.activeLayer.has('text')
+        // },
+        // hasPoint() {
+        //     return this.activeLayer.has('point')
+        // }
     },
     methods: {
         preStep() {
-
             this.gameStep++;
-
-            if (this.gameStep === this.gameStep-1) this.gameStep = 0
+            if (this.gameStep > gameLen-1) this.gameStep = 0
             let config = game[this.gameStep % gameLen];
             scrollTo({
                 el: this.$refs.scroll,
@@ -70,12 +129,10 @@ export default {
             })
         },
         nextStep() {
-
             this.gameStep--;
 
             if (this.gameStep === -1) this.gameStep = gameLen-1
 
-            // console.log(-1 * config.position[0], -1 * config.position[1])
             let config = game[this.gameStep % gameLen];
             scrollTo({
                 el: this.$refs.scroll,
@@ -85,8 +142,18 @@ export default {
                 scale: this.scale
             })
         },
-        zoom() {
-            let computedScale = this.scale === 1 ? 0.4 : 1;
+        // 放大
+        zoomIn() {
+            if (this.scale < MAX_SCALE) {
+                this.zoom(this.scale + 0.1)
+            }
+        },
+        zoomOut() {
+            if (this.scale > MIN_SCALE) {
+                this.zoom(this.scale - 0.1)
+            }
+        },
+        zoom(size) {
             let config = game[this.gameStep % gameLen];
 
             scrollTo({
@@ -94,20 +161,30 @@ export default {
                 target: this.$refs.item[this.gameStep],
                 x: config.position[0],
                 y: config.position[1],
-                // x: this.$refs.scroll.scrollLeft,
-                // y: this.$refs.scroll.scrollTop,
-                scale: computedScale,
+                scale: size,
                 animate: false
             }).then(res => {
-                this.scale = computedScale;
+                this.scale = size;
             })
-
+        },
+        switchLayer(layer) {
+            console.log(layer, this.activeLayer, this.activeLayer.has(layer));
+            if (this.activeLayer.has(layer)) {
+                this.activeLayer.delete(layer)
+                this[`has${layer}`] = false;
+            } else {
+                this.activeLayer.add(layer);
+                this[`has${layer}`] = true;
+            }
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.active{
+    color: red;
+}
 .home{
     position: relative;
     width: 100vw;
@@ -127,10 +204,11 @@ export default {
     background-position: center;
     background-repeat: no-repeat;
 
-    &--layer{
+    &--active{
         position: absolute;
         width: 100%;
         height: 100%;
+        z-index: 10;
         &-item{
             width: 100px;
             height: 100px;
@@ -139,28 +217,73 @@ export default {
             animation-delay: .5s;
         }
     }
+
+    &--layer{
+
+        &>div{
+            opacity: .1;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        &-line{
+            z-index: 5;
+            background-color: rgba(255,0,0,.6);
+        }
+        &-point{
+            z-index: 6;
+            background-color: rgba(0,255,0,.6);
+        }
+        &-text{
+            z-index: 7;
+            background-color: rgba(0,0,255,.6);
+        }
+        &-pic{
+            z-index: 8;
+            background-color: rgba(100,100,100,.6);
+        }
+    }
 }
 
 .control{
-    // position: absolute;
-    position: fixed;
-    z-index: 10;
-    width: 100%;
-    // bottom: 0;
-    top: 0;
-    left: 0;
-    height: 10vh;
-    background-color: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: space-around;
-    font-size: .4rem;
+
+    font-size: .3rem;
     color: white;
-    &--pre{
+    &--handle {
+        position: fixed;
+        z-index: 10;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 8vh;
+        background-color: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: space-around;
 
+        &>div{
+            flex-grow: 1;
+            text-align: center;
+        }
     }
-    &--next{
 
+    &--tap{
+        position: fixed;
+        z-index: 10;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        height: 8vh;
+        background-color: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: space-around;
+
+        &>div{
+            flex-grow: 1;
+            text-align: center;
+        }
     }
+
 
 }
 </style>
