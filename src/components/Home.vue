@@ -104,7 +104,7 @@ export default {
 
         var callback = mutationsList => {
             let transformStr = el.style.transform;
-            // 如果不是3d scale就计算
+            // 如果不是3d scale就计算, 来自pinchzoom的规律，停下就不是3d
             if (transformStr.indexOf('scale(') !== -1) {
                 let {scaleX} = parseTransform(transformStr)
                 // 拿到pinchzoom的scale

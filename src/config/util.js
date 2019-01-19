@@ -8,13 +8,18 @@ let isStopAnimate = true;
 
 function animateHandler(time) {
     if (isStopAnimate) return;
-    console.log('animate')
     requestAnimationFrame(animateHandler);
     TWEEN.update(time);
 }
 
-// isStopAnimate = false;
-// requestAnimationFrame(animateHandler);
+function startAnimate() {
+    isStopAnimate = false;
+    animateHandler();
+}
+
+function stopAnimate() {
+    isStopAnimate = true;
+}
 
 export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent);
 
@@ -41,29 +46,27 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
             y = y + targetHeight;
 
             if (animate) {
-                isStopAnimate = false;
-                animateHandler();
-
+                startAnimate();
                 var tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
                     .to({ x, y }, 500) // Move to (300, 200) in 1 second.
                     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
                     .onUpdate(function() { // Called after tween.js updates 'coords'.
-                        map.style.transform = `scale(${scale}, ${scale}) translate(${-coords.x}px, ${-coords.y}px)`;
+                        map.style.transform = `scale3d(${scale}, ${scale}, 1) translate3d(${-coords.x}px, ${-coords.y}px, 0px)`;
                     })
                     .onComplete(function() {
+                        stopAnimate()
                         resolve({
                             x, y,
                             offsetX: x - lastPosition.x,
                             offsetY: y - lastPosition.y
                         })
                         lastPosition = {x, y};
-                        isStopAnimate = true;
                     })
                     .start();
 
             } else {
-                isStopAnimate = true;
-                map.style.transform = `scale(${scaleX}, ${scaleX}) translate(${-x}px, ${-y}px)`;
+                stopAnimate()
+                map.style.transform = `scale3d(${scaleX}, ${scaleX}, 1) translate3d(${-x}px, ${-y}px, 0px)`;
                 resolve({
                     x, y,
                     offsetX: x - lastPosition.x,
