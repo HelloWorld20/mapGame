@@ -27,7 +27,7 @@
                 ></div>
             </transition>
         </div>
-        <div class="map--layer">
+        <!-- <div class="map--layer">
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
                 <div class="map--layer-line" v-show="hasline"></div>
             </transition>
@@ -40,7 +40,7 @@
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
                 <div class="map--layer-pic" v-show="haspic"></div>
             </transition>
-        </div>
+        </div> -->
 
     </div>
 
@@ -94,22 +94,17 @@ export default {
             haspic: true,
             hastext: true,
             haspoint: true,
+            pz: null    // pinchzoom实例
         }
     },
     mounted() {
 
-        let transformStr = 'scale(0.123, 0.123) translate(-123px, 0px)';
-
-        let result = parseTransform(transformStr)
-
-        let {scaleX, scaleY, translateX, translateY} = result
-
-        this.scale = parseFloat(result[1]);
-
         let el = this.$refs['map'];
-        let pz = new PinchZoom(el, {
+        this.pz = new PinchZoom(el, {
             maxZoom: 8,
-            minZoom: 1
+            minZoom: 1,
+            tapZoomFactor: 4,
+            // draggableUnzoomed: false
         });
 
         var config = { attributes: true, childList: false, subtree: false };
@@ -153,6 +148,10 @@ export default {
                 x: config.position[0],
                 y: config.position[1],
                 scale: this.scale
+            }).then(res => {
+                // 重设pinchzoom的滚动点位置，为了不让滚动时会闪烁，算法成谜
+                this.pz.offset.x = res.x * this.scale;
+                this.pz.offset.y = res.y * this.scale;
             })
         },
         // 放大

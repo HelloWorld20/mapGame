@@ -1,13 +1,14 @@
 import Vue from 'vue';
-const EASE_STEP = 30;
-const SCROLL_DURATION = 500;
-let srollTimer;
-let lastPosition = [0, 0];
+
+let lastPosition = {x: 0, y: 0};
 let offsetWidth = window.innerWidth/2;
 let offsetHeight = window.innerHeight/2;
 
+let isStopAnimate = true;
+
 function animate(time) {
     requestAnimationFrame(animate);
+    if (isStopAnimate) return;
     TWEEN.update(time);
 }
 requestAnimationFrame(animate);
@@ -16,7 +17,7 @@ export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent)
 
 export const bus = new Vue();
 
-export const scrollTo = ({el, x, y, scale = 1, animate = true, target, map}) => {
+export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
 
     x = x - offsetWidth/scale;
     y = y - offsetHeight/scale;
@@ -24,9 +25,9 @@ export const scrollTo = ({el, x, y, scale = 1, animate = true, target, map}) => 
     let targetWidth;
     let targetHeight;
 
-    let {scaleX, scaleY} = parseTransform(map.style.transform)
+    let {scaleX} = parseTransform(map.style.transform)
 
-    let coords = {x: lastPosition[0], y: lastPosition[1]}
+    let coords = {x: lastPosition.x, y: lastPosition.y}
     return new Promise(resolve => {
         setTimeout(() => {
             // 暂时有点乱，为啥是1.5
@@ -36,20 +37,33 @@ export const scrollTo = ({el, x, y, scale = 1, animate = true, target, map}) => 
             y = y + targetHeight;
 
             if (animate) {
+                isStopAnimate = false;
                 var tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
-                .to({ x, y }, 500) // Move to (300, 200) in 1 second.
-                .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
-                .onUpdate(function() { // Called after tween.js updates 'coords'.
-                    map.style.transform = `scale(${scaleX}, ${scaleX}) translate(${-coords.x}px, ${-coords.y}px)`;
-                })
-                .onComplete(function() {
-                    lastPosition = [x, y];
-                    resolve(lastPosition)
-                })
-                .start();
+                    .to({ x, y }, 500) // Move to (300, 200) in 1 second.
+                    .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+                    .onUpdate(function() { // Called after tween.js updates 'coords'.
+                        map.style.transform = `scale(${scaleX}, ${scaleX}) translate(${-coords.x}px, ${-coords.y}px)`;
+                    })
+                    .onComplete(function() {
+                        resolve({
+                            x, y,
+                            offsetX: x - lastPosition.x,
+                            offsetY: y - lastPosition.y
+                        })
+                        lastPosition = {x, y};
+                        isStopAnimate = true;
+                    })
+                    .start();
+
             } else {
+                isStopAnimate = true;
                 map.style.transform = `scale(${scaleX}, ${scaleX}) translate(${-x}px, ${-y}px)`;
-                resolve([x, y])
+                resolve({
+                    x, y,
+                    offsetX: x - lastPosition.x,
+                    offsetY: y - lastPosition.y
+                })
+                lastPosition = {x, y};
             }
         }, 0)
 
