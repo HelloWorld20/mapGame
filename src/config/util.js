@@ -25,7 +25,7 @@ export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent)
 
 export const bus = new Vue();
 
-export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
+export const scrollTo = ({x, y, scale = 1, animate = true, target, map, lastX, lastY}) => {
 
     // 屏幕的一半
     x = x - offsetWidth/scale;
@@ -48,8 +48,8 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
             if (animate) {
                 startAnimate();
                 var tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
-                    .to({ x, y }, 500) // Move to (300, 200) in 1 second.
-                    .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+                    .to({ x, y }, 1000) // Move to (300, 200) in 1 second.
+                    .easing(TWEEN.Easing.Quartic.Out) // Use an easing function to make the animation smooth.
                     .onUpdate(function() { // Called after tween.js updates 'coords'.
                         map.style.transform = `scale3d(${scale}, ${scale}, 1) translate3d(${-coords.x}px, ${-coords.y}px, 0px)`;
                     })
