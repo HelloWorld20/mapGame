@@ -26,20 +26,20 @@
                 ></div>
             </transition>
         </div>
-        <!-- <div class="map--layer">
+        <div class="map--layer">
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-line" v-show="hasline"></div>
+                <div class="map--layer-line" v-if="hasline"></div>
             </transition>
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-point" v-show="haspoint"></div>
+                <div class="map--layer-point" v-if="haspoint"></div>
             </transition>
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-text" v-show="hastext"></div>
+                <div class="map--layer-text" v-if="hastext"></div>
             </transition>
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-pic" v-show="haspic"></div>
+                <div class="map--layer-pic" v-if="haspic"></div>
             </transition>
-        </div> -->
+        </div>
 
     </div>
 
