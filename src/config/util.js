@@ -6,12 +6,15 @@ let offsetHeight = window.innerHeight/2;
 
 let isStopAnimate = true;
 
-function animate(time) {
-    requestAnimationFrame(animate);
+function animateHandler(time) {
     if (isStopAnimate) return;
+    console.log('animate')
+    requestAnimationFrame(animateHandler);
     TWEEN.update(time);
 }
-requestAnimationFrame(animate);
+
+// isStopAnimate = false;
+// requestAnimationFrame(animateHandler);
 
 export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent);
 
@@ -39,6 +42,8 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
 
             if (animate) {
                 isStopAnimate = false;
+                animateHandler();
+
                 var tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
                     .to({ x, y }, 500) // Move to (300, 200) in 1 second.
                     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
