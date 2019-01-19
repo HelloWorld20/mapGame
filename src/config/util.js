@@ -19,20 +19,21 @@ export const bus = new Vue();
 
 export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
 
+    // 屏幕的一半
     x = x - offsetWidth/scale;
     y = y - offsetHeight/scale;
 
     let targetWidth;
     let targetHeight;
 
-    let {scaleX} = parseTransform(map.style.transform)
+    // let {scaleX} = parseTransform(map.style.transform)
 
     let coords = {x: lastPosition.x, y: lastPosition.y}
     return new Promise(resolve => {
         setTimeout(() => {
-            // 暂时有点乱，为啥是1.5
-            targetWidth = target.offsetWidth*1.5 * scale;
-            targetHeight = target.offsetHeight*1.5 * scale;
+            // 半个元素的宽高
+            targetWidth = target.offsetWidth/2;
+            targetHeight = target.offsetHeight/2;
             x = x + targetWidth;
             y = y + targetHeight;
 
@@ -42,7 +43,7 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
                     .to({ x, y }, 500) // Move to (300, 200) in 1 second.
                     .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
                     .onUpdate(function() { // Called after tween.js updates 'coords'.
-                        map.style.transform = `scale(${scaleX}, ${scaleX}) translate(${-coords.x}px, ${-coords.y}px)`;
+                        map.style.transform = `scale(${scale}, ${scale}) translate(${-coords.x}px, ${-coords.y}px)`;
                     })
                     .onComplete(function() {
                         resolve({
@@ -65,7 +66,7 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
                 })
                 lastPosition = {x, y};
             }
-        }, 0)
+        }, 20)
 
     })
 
@@ -75,15 +76,15 @@ export const parseTransform = transformStr => {
     let result = transformStr.split(' ');
 
     let scaleX = result[0].slice(6, -1);
-    let scaleY = parseFloat(result[1]) + '';
-    let translateX = result[2].slice(10, -1);
-    let translateY = parseFloat(result[3]) + 'px';
+    // let scaleY = parseFloat(result[1]) + '';
+    // let translateX = result[2].slice(10, -1);
+    // let translateY = parseFloat(result[3]) + 'px';
 
     return {
-        scaleX,
-        scaleY,
-        translateX,
-        translateY
+        scaleX
+        // scaleY,
+        // translateX,
+        // translateY
     }
 }
 

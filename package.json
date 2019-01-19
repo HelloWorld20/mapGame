@@ -11,7 +11,6 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "better-scroll": "^1.13.4",
     "hwlever": "git+https://github.com/HelloWorld20/hwLever.git",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"

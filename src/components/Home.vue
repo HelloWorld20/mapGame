@@ -1,10 +1,10 @@
 <template>
-<div class="home" ref="scroll">
-    <!-- transform: `scale(${scale}, ${scale})` -->
+<div class="home">
+    <!-- <div class="lineX" style="position: fixed; height: 100vh;width: 1px; left: 50%; background: red;z-index: 9999;"></div>
+    <div class="lineY" style="position: fixed; height: 1px;width: 100vw; top: 50%; background: green;z-index: 9999;"></div> -->
     <div class="map" ref='map'
         :style="{
             'background-image': `url(${require('../assets/img/map.jpg')})`,
-
             }">
         <div class="map--active">
             <transition
@@ -13,7 +13,6 @@
                 v-for="(item, key) in game"
                 :Key=key
             >
-                <!-- transform: `translate(${(innerWidth/2) * (1/scale) - 50}px, ${(innerHeight/2) * (1/scale) - 50}px)`, -->
                 <div
                     class="map--active-item map--active-map animated"
                     :Key=key
@@ -76,19 +75,15 @@
 <script>
 import { game } from '@/config/config';
 import { scrollTo, parseTransform } from '@/config/util';
-import VueScroll from 'better-scroll'
 import PinchZoom from '@/lib/pinchzoom'
 
 let gameLen = game.length;  // 游戏配置长度
-const MAX_SCALE = 1;
-const MIN_SCALE = 0.4;
 export default {
     data() {
         return {
             game,   // 游戏配置
             gameStep: 0,    // 当前游戏步骤
-            scale: 0.6,    // 地图缩放比例
-            currentOffset: [0, 0],
+            scale: 1,    // 地图缩放比例
             activeLayer: new Set(['line', 'point', 'text', 'pic']),
             hasline: true,
             haspic: true,
@@ -107,10 +102,9 @@ export default {
             // draggableUnzoomed: false
         });
 
-        var config = { attributes: true, childList: false, subtree: false };
-
         var callback = mutationsList => {
             let transformStr = el.style.transform;
+            // 如果不是3d scale就计算
             if (transformStr.indexOf('scale(') !== -1) {
                 let {scaleX} = parseTransform(transformStr)
                 // 拿到pinchzoom的scale
@@ -119,7 +113,7 @@ export default {
         };
 
         var observer = new MutationObserver(callback);
-        observer.observe(el, config);
+        observer.observe(el, {attributes: true, childList: false, subtree: false });
     },
     methods: {
         preStep() {
@@ -133,6 +127,10 @@ export default {
                 x: config.position[0],
                 y: config.position[1],
                 scale: this.scale
+            }).then(res => {
+                // 重设pinchzoom的滚动点位置，为了不让滚动时会闪烁，算法成谜
+                this.pz.offset.x = res.x * this.scale;
+                this.pz.offset.y = res.y * this.scale;
             })
         },
         nextStep() {
@@ -154,34 +152,7 @@ export default {
                 this.pz.offset.y = res.y * this.scale;
             })
         },
-        // 放大
-        // zoomIn() {
-        //     if (this.scale < MAX_SCALE) {
-        //         this.zoom(this.scale + 0.1)
-        //     }
-        // },
-        // zoomOut() {
-        //     if (this.scale > MIN_SCALE) {
-        //         this.zoom(this.scale - 0.1)
-        //     }
-        // },
-        // zoom(size) {
-        //     let config = game[this.gameStep % gameLen];
-
-        //     scrollTo({
-        //         el: this.$refs.scroll,
-        //         target: this.$refs.item[this.gameStep],
-        //         map: this.$refs.map,
-        //         x: config.position[0],
-        //         y: config.position[1],
-        //         scale: size,
-        //         animate: false
-        //     }).then(res => {
-        //         this.scale = size;
-        //     })
-        // },
         switchLayer(layer) {
-            console.log(layer, this.activeLayer, this.activeLayer.has(layer));
             if (this.activeLayer.has(layer)) {
                 this.activeLayer.delete(layer)
                 this[`has${layer}`] = false;
