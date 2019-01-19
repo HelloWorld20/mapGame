@@ -78,78 +78,87 @@ import { scrollTo, parseTransform } from '@/config/util';
 import PinchZoom from '@/lib/pinchzoom'
 
 let gameLen = game.length;  // 游戏配置长度
+let mapScale = 1;
+let isAnimating = false;
+let pz = null;// pinchzoom实例
 export default {
     data() {
         return {
             game,   // 游戏配置
             gameStep: 0,    // 当前游戏步骤
-            scale: 1,    // 地图缩放比例
+            // scale: 1,    // 地图缩放比例
             activeLayer: new Set(['line', 'point', 'text', 'pic']),
             hasline: true,
             haspic: true,
             hastext: true,
-            haspoint: true,
-            pz: null    // pinchzoom实例
+            haspoint: true
         }
     },
     mounted() {
 
         let el = this.$refs['map'];
-        this.pz = new PinchZoom(el, {
+        pz = new PinchZoom(el, {
             maxZoom: 8,
             minZoom: 1,
             tapZoomFactor: 4,
             // draggableUnzoomed: false
         });
 
-        var callback = mutationsList => {
+        var callback = () => {
             let transformStr = el.style.transform;
             // 如果不是3d scale就计算, 来自pinchzoom的规律，停下就不是3d
             if (transformStr.indexOf('scale(') !== -1) {
-                let {scaleX} = parseTransform(transformStr)
+                // let {scaleX} = parseTransform(transformStr)
                 // 拿到pinchzoom的scale
-                this.scale = scaleX;
+                mapScale = parseTransform(transformStr);
             }
         };
 
         var observer = new MutationObserver(callback);
         observer.observe(el, {attributes: true, childList: false, subtree: false });
+        observer = null;
     },
     methods: {
         preStep() {
-            this.gameStep++;
-            if (this.gameStep > gameLen-1) this.gameStep = 0
+            if (isAnimating) return;
+            this.gameStep--;
+            if (this.gameStep === -1) this.gameStep = gameLen-1
             let config = game[this.gameStep % gameLen];
+            isAnimating = true;
             scrollTo({
                 // el: this.$refs.scroll,
                 target: this.$refs.item[this.gameStep],
                 map: this.$refs.map,
                 x: config.position[0],
                 y: config.position[1],
-                scale: this.scale
+                scale: mapScale
             }).then(res => {
                 // 重设pinchzoom的滚动点位置，为了不让滚动时会闪烁，算法成谜
-                this.pz.offset.x = res.x * this.scale;
-                this.pz.offset.y = res.y * this.scale;
+                pz.offset.x = res.x * mapScale;
+                pz.offset.y = res.y * mapScale;
+                isAnimating = false;
             })
         },
         nextStep() {
-            this.gameStep--;
+            if (isAnimating) return;
 
-            if (this.gameStep === -1) this.gameStep = gameLen-1
-
+            this.gameStep++;
+            if (this.gameStep > gameLen-1) this.gameStep = 0
             let config = game[this.gameStep % gameLen];
+
+            isAnimating = true;
             scrollTo({
                 // el: this.$refs.scroll,
                 target: this.$refs.item[this.gameStep],
                 map: this.$refs.map,
                 x: config.position[0],
                 y: config.position[1],
-                scale: this.scale
+                scale: mapScale
             }).then(res => {
                 // 重设pinchzoom的滚动点位置，为了不让滚动时会闪烁，算法成谜
-                this.pz.offset.x = res.x * this.scale;
-                this.pz.offset.y = res.y * this.scale;
+                pz.offset.x = res.x * mapScale;
+                pz.offset.y = res.y * mapScale;
+                isAnimating = false;
             })
         },
         switchLayer(layer) {

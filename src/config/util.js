@@ -56,9 +56,7 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
                     .onComplete(function() {
                         stopAnimate()
                         resolve({
-                            x, y,
-                            offsetX: x - lastPosition.x,
-                            offsetY: y - lastPosition.y
+                            x, y
                         })
                         lastPosition = {x, y};
                     })
@@ -68,9 +66,7 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
                 stopAnimate()
                 map.style.transform = `scale3d(${scaleX}, ${scaleX}, 1) translate3d(${-x}px, ${-y}px, 0px)`;
                 resolve({
-                    x, y,
-                    offsetX: x - lastPosition.x,
-                    offsetY: y - lastPosition.y
+                    x, y
                 })
                 lastPosition = {x, y};
             }
@@ -83,16 +79,18 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
 export const parseTransform = transformStr => {
     let result = transformStr.split(' ');
 
-    let scaleX = result[0].slice(6, -1);
+    // let scaleX = result[0].slice(6, -1);
     // let scaleY = parseFloat(result[1]) + '';
     // let translateX = result[2].slice(10, -1);
     // let translateY = parseFloat(result[3]) + 'px';
 
-    return {
-        scaleX
-        // scaleY,
-        // translateX,
-        // translateY
-    }
+    return result[0].slice(6, -1)
+
+    // return {
+    //     scaleX
+    //     // scaleY,
+    //     // translateX,
+    //     // translateY
+    // }
 }
 
