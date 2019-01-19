@@ -1,9 +1,10 @@
 <template>
 <div class="home" ref="scroll">
+    <!-- transform: `scale(${scale}, ${scale})` -->
     <div class="map" ref='map'
         :style="{
             'background-image': `url(${require('../assets/img/map.jpg')})`,
-            transform: `scale(${scale}, ${scale})`
+
             }">
         <div class="map--active">
             <transition
@@ -46,8 +47,8 @@
     <div class="control">
         <div class="control--handle">
             <div class="control--handle-pre" @touchstart="preStep">上一步</div>
-            <div class="control--handle-zoom" @touchstart="zoomIn">放大</div>
-            <div class="control--handle-zoom" @touchstart="zoomOut">缩小</div>
+            <!-- <div class="control--handle-zoom" @touchstart="zoomIn">放大</div>
+            <div class="control--handle-zoom" @touchstart="zoomOut">缩小</div> -->
             <div class="control--handle-next" @touchstart="nextStep">下一步</div>
         </div>
         <div class="control--tap">
@@ -74,8 +75,9 @@
 
 <script>
 import { game } from '@/config/config';
-import { scrollTo } from '@/config/util';
+import { scrollTo, parseTransform } from '@/config/util';
 import VueScroll from 'better-scroll'
+import PinchZoom from '@/lib/pinchzoom'
 
 let gameLen = game.length;  // 游戏配置长度
 const MAX_SCALE = 1;
@@ -95,7 +97,34 @@ export default {
         }
     },
     mounted() {
-        this.nextStep();
+
+        let transformStr = 'scale(0.123, 0.123) translate(-123px, 0px)';
+
+        let result = parseTransform(transformStr)
+
+        let {scaleX, scaleY, translateX, translateY} = result
+
+        this.scale = parseFloat(result[1]);
+
+        let el = this.$refs['map'];
+        let pz = new PinchZoom(el, {
+            maxZoom: 8,
+            minZoom: 1
+        });
+
+        var config = { attributes: true, childList: false, subtree: false };
+
+        var callback = mutationsList => {
+            let transformStr = el.style.transform;
+            if (transformStr.indexOf('scale(') !== -1) {
+                let {scaleX} = parseTransform(transformStr)
+                // 拿到pinchzoom的scale
+                this.scale = scaleX;
+            }
+        };
+
+        var observer = new MutationObserver(callback);
+        observer.observe(el, config);
     },
     methods: {
         preStep() {
@@ -103,8 +132,9 @@ export default {
             if (this.gameStep > gameLen-1) this.gameStep = 0
             let config = game[this.gameStep % gameLen];
             scrollTo({
-                el: this.$refs.scroll,
+                // el: this.$refs.scroll,
                 target: this.$refs.item[this.gameStep],
+                map: this.$refs.map,
                 x: config.position[0],
                 y: config.position[1],
                 scale: this.scale
@@ -117,38 +147,40 @@ export default {
 
             let config = game[this.gameStep % gameLen];
             scrollTo({
-                el: this.$refs.scroll,
+                // el: this.$refs.scroll,
                 target: this.$refs.item[this.gameStep],
+                map: this.$refs.map,
                 x: config.position[0],
                 y: config.position[1],
                 scale: this.scale
             })
         },
         // 放大
-        zoomIn() {
-            if (this.scale < MAX_SCALE) {
-                this.zoom(this.scale + 0.1)
-            }
-        },
-        zoomOut() {
-            if (this.scale > MIN_SCALE) {
-                this.zoom(this.scale - 0.1)
-            }
-        },
-        zoom(size) {
-            let config = game[this.gameStep % gameLen];
+        // zoomIn() {
+        //     if (this.scale < MAX_SCALE) {
+        //         this.zoom(this.scale + 0.1)
+        //     }
+        // },
+        // zoomOut() {
+        //     if (this.scale > MIN_SCALE) {
+        //         this.zoom(this.scale - 0.1)
+        //     }
+        // },
+        // zoom(size) {
+        //     let config = game[this.gameStep % gameLen];
 
-            scrollTo({
-                el: this.$refs.scroll,
-                target: this.$refs.item[this.gameStep],
-                x: config.position[0],
-                y: config.position[1],
-                scale: size,
-                animate: false
-            }).then(res => {
-                this.scale = size;
-            })
-        },
+        //     scrollTo({
+        //         el: this.$refs.scroll,
+        //         target: this.$refs.item[this.gameStep],
+        //         map: this.$refs.map,
+        //         x: config.position[0],
+        //         y: config.position[1],
+        //         scale: size,
+        //         animate: false
+        //     }).then(res => {
+        //         this.scale = size;
+        //     })
+        // },
         switchLayer(layer) {
             console.log(layer, this.activeLayer, this.activeLayer.has(layer));
             if (this.activeLayer.has(layer)) {
@@ -171,9 +203,9 @@ export default {
     position: relative;
     width: 100vw;
     height: 100vh;
-    overflow: auto;
+    // overflow: auto;
+    overflow: hidden;
     -webkit-overflow-scrolling: touch;
-    // perspective: 100px;
 }
 .map{
     position: relative;
