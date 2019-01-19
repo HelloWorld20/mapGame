@@ -1,8 +1,8 @@
 import Vue from 'vue';
 
 let lastPosition = {x: 0, y: 0};
-let offsetWidth = window.innerWidth/2;
-let offsetHeight = window.innerHeight/2;
+let offsetWidth = window.innerWidth >> 1;   // >> 1 位运算：除以2
+let offsetHeight = window.innerHeight >> 1;
 
 let isStopAnimate = true;
 
@@ -40,8 +40,8 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
     return new Promise(resolve => {
         setTimeout(() => {
             // 半个元素的宽高
-            targetWidth = target.offsetWidth/2;
-            targetHeight = target.offsetHeight/2;
+            targetWidth = target.offsetWidth >> 1;
+            targetHeight = target.offsetHeight >> 1;
             x = x + targetWidth;
             y = y + targetHeight;
 

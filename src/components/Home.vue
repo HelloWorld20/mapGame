@@ -33,12 +33,12 @@
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
                 <div class="map--layer-point" v-if="haspoint"></div>
             </transition>
-            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
+            <!-- <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
                 <div class="map--layer-text" v-if="hastext"></div>
             </transition>
             <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
                 <div class="map--layer-pic" v-if="haspic"></div>
-            </transition>
+            </transition> -->
         </div>
 
     </div>
@@ -46,10 +46,9 @@
     <div class="control">
         <div class="control--handle">
             <div class="control--handle-pre" @touchstart="preStep">上一步</div>
-            <!-- <div class="control--handle-zoom" @touchstart="zoomIn">放大</div>
-            <div class="control--handle-zoom" @touchstart="zoomOut">缩小</div> -->
             <div class="control--handle-next" @touchstart="nextStep">下一步</div>
         </div>
+        <!-- 切换tab用切换背景图片的方式，不用多图层的方式 -->
         <div class="control--tap">
             <div class="control--tab-1"
                 :class="{active: hasline}"
@@ -59,14 +58,14 @@
                 :class="{active: haspoint}"
                 @click="switchLayer('point')"
             >2</div>
-            <div class="control--tab-3"
+            <!-- <div class="control--tab-3"
                 :class="{active: hastext}"
                 @click="switchLayer('text')"
             >3</div>
             <div class="control--tab-4"
                 :class="{active: haspic}"
                 @click="switchLayer('pic')"
-            >4</div>
+            >4</div> -->
         </div>
     </div>
 </div>
@@ -78,7 +77,7 @@ import { scrollTo, parseTransform } from '@/config/util';
 import PinchZoom from '@/lib/pinchzoom'
 
 let gameLen = game.length;  // 游戏配置长度
-let mapScale = 1;
+// let mapScale = 1;
 let isAnimating = false;
 let pz = null;// pinchzoom实例
 export default {
@@ -104,19 +103,22 @@ export default {
             // draggableUnzoomed: false
         });
 
-        var callback = () => {
-            let transformStr = el.style.transform;
-            // 如果不是3d scale就计算, 来自pinchzoom的规律，停下就不是3d
-            if (transformStr.indexOf('scale(') !== -1) {
-                // let {scaleX} = parseTransform(transformStr)
-                // 拿到pinchzoom的scale
-                mapScale = parseTransform(transformStr);
-            }
-        };
+        // window.pz = pz;
 
-        var observer = new MutationObserver(callback);
-        observer.observe(el, {attributes: true, childList: false, subtree: false });
-        observer = null;
+        // var callback = () => {
+        //     let transformStr = el.style.transform;
+        //     // 如果不是3d scale就计算, 来自pinchzoom的规律，停下就不是3d
+        //     if (transformStr.indexOf('scale(') !== -1) {
+        //         // let {scaleX} = parseTransform(transformStr)
+        //         // 拿到pinchzoom的scale
+        //         mapScale = parseTransform(transformStr);
+        //         console.log(mapScale, pz.getInitialZoomFactor() * pz.zoomFactor)
+        //     }
+        // };
+
+        // var observer = new MutationObserver(callback);
+        // observer.observe(el, {attributes: true, childList: false, subtree: false });
+        // observer = null;
     },
     methods: {
         preStep() {
@@ -125,18 +127,24 @@ export default {
             if (this.gameStep === -1) this.gameStep = gameLen-1
             let config = game[this.gameStep % gameLen];
             isAnimating = true;
+
+            let scale = pz.getInitialZoomFactor() * pz.zoomFactor;
+            pz.disable();
             scrollTo({
                 // el: this.$refs.scroll,
                 target: this.$refs.item[this.gameStep],
                 map: this.$refs.map,
                 x: config.position[0],
                 y: config.position[1],
-                scale: mapScale
+                scale
             }).then(res => {
                 // 重设pinchzoom的滚动点位置，为了不让滚动时会闪烁，算法成谜
-                pz.offset.x = res.x * mapScale;
-                pz.offset.y = res.y * mapScale;
+
+                pz.offset.x = res.x * scale;
+                pz.offset.y = res.y * scale;
                 isAnimating = false;
+                scale = null;
+                pz.enable();
             })
         },
         nextStep() {
@@ -147,18 +155,22 @@ export default {
             let config = game[this.gameStep % gameLen];
 
             isAnimating = true;
+
+            let scale = pz.getInitialZoomFactor() * pz.zoomFactor;
+            pz.disable();
             scrollTo({
                 // el: this.$refs.scroll,
                 target: this.$refs.item[this.gameStep],
                 map: this.$refs.map,
                 x: config.position[0],
                 y: config.position[1],
-                scale: mapScale
+                scale
             }).then(res => {
                 // 重设pinchzoom的滚动点位置，为了不让滚动时会闪烁，算法成谜
-                pz.offset.x = res.x * mapScale;
-                pz.offset.y = res.y * mapScale;
+                pz.offset.x = res.x * scale;
+                pz.offset.y = res.y * scale;
                 isAnimating = false;
+                pz.enable();
             })
         },
         switchLayer(layer) {
@@ -184,7 +196,7 @@ export default {
     height: 100vh;
     // overflow: auto;
     overflow: hidden;
-    -webkit-overflow-scrolling: touch;
+    // -webkit-overflow-scrolling: touch;
 }
 .map{
     position: relative;
@@ -192,7 +204,6 @@ export default {
     height: 4500px;
     z-index: 1;
     transform-origin: 0 0;
-    // background-image: url('../assets/img/map.jpg');
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -208,6 +219,7 @@ export default {
             position: absolute;
             // transform: translate(-50%, -50%);
             animation-delay: .5s;
+            // will-change: transform;
         }
     }
 
