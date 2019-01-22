@@ -21,77 +21,91 @@
                         'background-image': `url(${require('../assets/img/'+ item.img)})`,
                         left: item.position[0] + 'px',
                         top: item.position[1] + 'px',
-                        }"
+                    }"
                     v-show="gameStep === key"
                 ></div>
             </transition>
         </div>
         <div class="map--layer">
-            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-line" v-if="hasline"></div>
-            </transition>
-            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-point" v-if="haspoint"></div>
-            </transition>
-            <!-- <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-text" v-if="hastext"></div>
-            </transition>
-            <transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-                <div class="map--layer-pic" v-if="haspic"></div>
-            </transition> -->
+            <!-- <transition enter-active-class="fadeIn" leave-active-class="fadeOut"> -->
+                <div class="map--layer-supervise" v-if="hasSupervise"></div>
+            <!-- </transition> -->
+            <!-- <transition enter-active-class="fadeIn" leave-active-class="fadeOut"> -->
+                <div class="map--layer-mayer" v-if="hasMayer"></div>
+            <!-- </transition> -->
+            <!-- <transition enter-active-class="fadeIn" leave-active-class="fadeOut"> -->
+                <div class="map--layer-basic" v-if="hasBasic"></div>
+            <!-- </transition> -->
+            <!-- <transition enter-active-class="fadeIn" leave-active-class="fadeOut"> -->
+                <div class="map--layer-park" v-if="hasPark"></div>
+            <!-- </transition> -->
+            <!-- <transition enter-active-class="fadeIn" leave-active-class="fadeOut"> -->
+                <div class="map--layer-reporter" v-if="hasReporter"></div>
+            <!-- </transition> -->
         </div>
-
     </div>
 
     <div class="control">
-        <div class="control--handle">
+        <!-- <div class="control--handle">
             <div class="control--handle-pre" @touchstart="preStep">上一步</div>
             <div class="control--handle-next" @touchstart="nextStep">下一步</div>
-        </div>
+        </div> -->
         <!-- 切换tab用切换背景图片的方式，不用多图层的方式 -->
         <div class="control--tap">
             <div class="control--tab-1"
-                :class="{active: hasline}"
-                @click="switchLayer('line')"
-            >1</div>
+                :class="{active: hasSupervise}"
+                @click="switchLayer('Supervise')"
+            >督察组“回头看”地点</div>
             <div class="control--tab-2"
-                :class="{active: haspoint}"
-                @click="switchLayer('point')"
-            >2</div>
-            <!-- <div class="control--tab-3"
-                :class="{active: hastext}"
-                @click="switchLayer('text')"
-            >3</div>
+                :class="{active: hasMayer}"
+                @click="switchLayer('Mayer')"
+            >市级河长驻河过夜点</div>
+            <div class="control--tab-3"
+                :class="{active: hasBasic}"
+                @click="switchLayer('Basic')"
+            >基础设施</div>
             <div class="control--tab-4"
-                :class="{active: haspic}"
-                @click="switchLayer('pic')"
-            >4</div> -->
+                :class="{active: hasPark}"
+                @click="switchLayer('Park')"
+            >工业园区</div>
+            <div class="control--tab-4"
+                :class="{active: hasReporter}"
+                @click="switchLayer('Reporter')"
+            >驻河记者路线</div>
         </div>
     </div>
+    <!-- <vue-frame ref="frame"></vue-frame> -->
+    <vue-rota :isComponents="true"></vue-rota>
 </div>
 </template>
 
 <script>
 import { game } from '@/config/config';
 import { scrollTo, parseTransform } from '@/config/util';
-import PinchZoom from '@/lib/pinchzoom'
+import PinchZoom from '@/lib/pinchzoom';
+// import VueFrame from '@/components/childComponents/Frame.vue';
+import VueRota from '@/components/childComponents/Rota.vue';
 
 let gameLen = game.length;  // 游戏配置长度
-// let mapScale = 1;
 let isAnimating = false;
 let pz = null;// pinchzoom实例
+
 export default {
     data() {
         return {
             game,   // 游戏配置
             gameStep: 0,    // 当前游戏步骤
-            // scale: 1,    // 地图缩放比例
-            activeLayer: new Set(['line', 'point', 'text', 'pic']),
-            hasline: true,
-            haspic: true,
-            hastext: true,
-            haspoint: true
+            activeLayer: new Set(['Supervise', 'Mayer', 'Basic', 'Park', 'Reporter']),
+            hasSupervise: true,
+            hasMayer: true,
+            hasBasic: true,
+            hasPark: true,
+            hasReporter: true,
         }
+    },
+    components: {
+        // VueFrame,
+        VueRota
     },
     mounted() {
 
@@ -100,25 +114,11 @@ export default {
             maxZoom: 8,
             minZoom: 1,
             tapZoomFactor: 4,
-            // draggableUnzoomed: false
         });
 
         // window.pz = pz;
 
-        // var callback = () => {
-        //     let transformStr = el.style.transform;
-        //     // 如果不是3d scale就计算, 来自pinchzoom的规律，停下就不是3d
-        //     if (transformStr.indexOf('scale(') !== -1) {
-        //         // let {scaleX} = parseTransform(transformStr)
-        //         // 拿到pinchzoom的scale
-        //         mapScale = parseTransform(transformStr);
-        //         console.log(mapScale, pz.getInitialZoomFactor() * pz.zoomFactor)
-        //     }
-        // };
-
-        // var observer = new MutationObserver(callback);
-        // observer.observe(el, {attributes: true, childList: false, subtree: false });
-        // observer = null;
+        // this.$refs.frame.$emit('start');
     },
     methods: {
         preStep() {
@@ -159,7 +159,6 @@ export default {
             let scale = pz.getInitialZoomFactor() * pz.zoomFactor;
             pz.disable();
             scrollTo({
-                // el: this.$refs.scroll,
                 target: this.$refs.item[this.gameStep],
                 map: this.$refs.map,
                 x: config.position[0],
@@ -177,6 +176,7 @@ export default {
             if (this.activeLayer.has(layer)) {
                 this.activeLayer.delete(layer)
                 this[`has${layer}`] = false;
+                console.log(this[`has${layer}`])
             } else {
                 this.activeLayer.add(layer);
                 this[`has${layer}`] = true;
@@ -187,6 +187,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../assets/scss/extend.scss';
+
 .active{
     color: red;
 }
@@ -232,28 +234,32 @@ export default {
             height: 100%;
         }
 
-        &-line{
+        &-supervise{
             z-index: 5;
             background-color: rgba(255,0,0,.6);
         }
-        &-point{
+        &-mayer{
             z-index: 6;
             background-color: rgba(0,255,0,.6);
         }
-        &-text{
+        &-basic{
             z-index: 7;
             background-color: rgba(0,0,255,.6);
         }
-        &-pic{
+        &-park{
             z-index: 8;
-            background-color: rgba(100,100,100,.6);
+            background-color: rgba(0,100,100,.6);
+        }
+        &-reporter{
+            z-index: 9;
+            background-color: rgba(100,100,0,.6);
         }
     }
 }
 
 .control{
 
-    font-size: .3rem;
+    font-size: .13rem;
     color: white;
     &--handle {
         position: fixed;
@@ -284,7 +290,8 @@ export default {
         justify-content: space-around;
 
         &>div{
-            flex-grow: 1;
+            width:20%;
+            // flex-grow: 1;
             text-align: center;
         }
     }

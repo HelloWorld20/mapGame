@@ -23,9 +23,15 @@ function stopAnimate() {
 
 export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent);
 
-export const bus = new Vue();
+// export const bus = new Vue();
 
-export const scrollTo = ({x, y, scale = 1, animate = true, target, map, lastX, lastY}) => {
+// 是否时竖屏
+// 0：竖屏、90或-90横屏
+export const isVertical = () => {
+    return Math.abs(window.orientation) !== 90
+}
+
+export const scrollTo = ({x, y, scale = 1, animate = true, target, map}) => {
 
     // 屏幕的一半
     x = x - offsetWidth/scale;
@@ -33,8 +39,6 @@ export const scrollTo = ({x, y, scale = 1, animate = true, target, map, lastX, l
 
     let targetWidth;
     let targetHeight;
-
-    // let {scaleX} = parseTransform(map.style.transform)
 
     let coords = {x: lastPosition.x, y: lastPosition.y}
     return new Promise(resolve => {

@@ -9,6 +9,7 @@ html,body{
     padding: 0;
     overflow: hidden;
     margin:0;
+    background-color: white;
     -webkit-font-smoothing:antialiased;
 }
 
@@ -50,4 +51,12 @@ html,body{
 @function tr($px){
     @return $px/200*1rem;
 }
+// px转vw，竖模式
+@function tvw($px){
+    @return $px/720*100vw;
+}
 
+// px转vw，横屏模式
+@function tvwV($px){
+    @return $px/640*100vh;
+}
