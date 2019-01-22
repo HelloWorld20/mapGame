@@ -24,9 +24,15 @@
                     >记者带你走走看</div>
                 </transition>
             </div>
-            <div class="right"
-                :style="{'background-image': `url(${require('../assets/img/loading.gif')})`}"
-            >
+            <div class="right">
+                <div class="man" :style="{'background-image': `url(${require('imgs/loading.gif')})`}"></div>
+                <transition enter-active-class="fadeIn">
+                    <div class="river animated"
+                        v-show="ready"
+                        :style="{'background-image': `url(${require('imgs/bg-river.png')})`}"
+                        style="animation-delay: 1s; animation-duration: 2s"
+                    ></div>
+                </transition>
             </div>
         </div>
         <div class="down">
@@ -37,19 +43,7 @@
                 {{progress}} %
             </div>
         </div>
-        <!-- <div class="icon"
-            :style="{'background-image': `url(${require('../assets/img/loading.gif')})`}"
-        ></div>
-        <div class="bar">
-            <div class="wrapper">
-                <div class="process" :style="{width: progress + '%'}"></div>
-            </div>
-        </div>
-        <div class="count">
-            {{progress}} %
-        </div> -->
         <vue-rota></vue-rota>
-        <!-- <vue-preload @percentage="percentage" @loaded="loaded"></vue-preload> -->
     </section>
 
 </template>
@@ -115,17 +109,41 @@ export default {
                 line-height: 1;
                 margin-bottom: tvwV(26);
                 color: black;
+                font-weight: bolder;
             }
         }
         .right{
             width: tvwV(302);
             height: tvwV(362);
-            background-size: 100%;
-            background-position: center;
-            background-repeat: no-repeat;
+
             position: absolute;
             right: 0;
             top: tvwV(-60);
+            z-index: 1;
+            // top: tvwV(-100);
+            .man{
+                position: absolute;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                top: 0;
+                z-index: 2;
+            }
+            .river{
+                position: absolute;
+                width: tvwV(620);
+                height: tvwV(76);
+                top: tvwV(240);
+                // bottom: tvwV(-70);
+                left: tvwV(-180);
+                z-index: 1;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
         }
     }
     .down{
@@ -150,56 +168,11 @@ export default {
 
         .count{
             font-size: tvwV(26);
+            font-weight: bolder;
             width: 100%;
             text-align: center;
             margin-top: tvwV(36);
         }
     }
-
-
-    // .icon{
-    //     background-size: 100%;
-    //     background-position: center;
-    //     background-repeat: no-repeat;
-    //     width: tvw(302);
-    //     height: tvw(362);
-    //     position: absolute;
-    //     transform: translate(-50%, -50%);
-    //     left: 50%;
-    //     top: 30vw;
-    // }
-
-    // .bar{
-    //     width: tvw(440);
-    //     margin: tvw(400) auto 0;
-    //     height: tvw(30);
-    //     border: tvw(5) solid black;
-    //     border-radius: tvw(15);
-    //     box-sizing: border-box;
-    //     display: flex;
-    //     // justify-content: center;
-    //     align-items: center;
-    //     padding: 0 tvw(8);
-    //     .wrapper{
-    //         height: tvw(8);
-    //         background-color: transparent;
-    //         // background-color: rgba(0, 100, 0, .4);
-    //         width: tvw(424);
-
-    //         .process{
-    //             transition: width 1s ease-in-out;
-    //             height: 100%;
-    //             background-color: black;
-    //             border-radius: tvw(4);
-    //         }
-    //     }
-    // }
-
-    // .count{
-    //     font-size: tvw(26);
-    //     width: 100%;
-    //     text-align: center;
-    //     margin-top: tvw(42);
-    // }
 
 </style>

@@ -770,7 +770,7 @@
 
               detectDoubleTap = function (event) {
                 // 双击缩放会卡，禁用吧
-                if (process.env.NODE_ENV === 'production') return;
+                // if (process.env.NODE_ENV === 'production') return;
                   var time = (new Date()).getTime();
 
                   if (fingers > 1) {

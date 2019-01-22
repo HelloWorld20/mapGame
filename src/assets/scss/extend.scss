@@ -58,5 +58,5 @@ html,body{
 
 // px转vw，横屏模式
 @function tvwV($px){
-    @return $px/640*100vh;
+    @return $px/1336*100vw;
 }

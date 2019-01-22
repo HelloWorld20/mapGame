@@ -9,7 +9,7 @@ import { isWeixinBrowser } from './config/util';
 
 
 require('@/assets/animate.css');
-require('@/lib/Tween')
+// require('@/lib/Tween')
 
 Vue.config.productionTip = false;
 

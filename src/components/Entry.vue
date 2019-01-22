@@ -14,11 +14,11 @@ export default {
     components: {VueRota, VueLoading},
     methods: {
         onRota(isVertical) {
-            console.log('onRota')
             if (!isVertical) {
                 // 如果是竖屏
-                // console.log('vertical jump to loading')
-                this.$router.replace('Loading')
+                setTimeout(() => {
+                    this.$router.replace('Loading')
+                }, 500)
             }
         }
     }
