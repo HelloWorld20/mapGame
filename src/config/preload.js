@@ -64,7 +64,7 @@ Preload.prototype.preloadAudio = function() {
             audio.pause();
         }, false)
 
-        audio.src = require('@/assets/' + v);
+        audio.src = require('@/assets/audios/bgm.mp3');
         window.audioCache[i] = audio;
     })
 

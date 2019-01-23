@@ -31,11 +31,23 @@ export default {
 	},
 	imgs: [
         'img/bg-loading.png',
+        'img/loading.gif',
+        'img/map.png',
         'img/bg-river.png',
         'img/btn-basic.png',
         'img/btn-mayer.png',
         'img/btn-park.png',
         'img/btn-reporter.png',
+        'img/btn-reporter1.png',
+        'img/btn-reporter10.png',
+        'img/btn-reporter2.png',
+        'img/btn-reporter3.png',
+        'img/btn-reporter4.png',
+        'img/btn-reporter5.png',
+        'img/btn-reporter6.png',
+        'img/btn-reporter7.png',
+        'img/btn-reporter8.png',
+        'img/btn-reporter9.png',
         'img/btn-supervise.png',
         'img/layer-basic.png',
         'img/layer-mayer.png',
@@ -51,11 +63,9 @@ export default {
         'img/layer-reporter8.png',
         'img/layer-reporter9.png',
         'img/layer-supervise.png',
-        'img/loading.gif',
-        'img/map.png',
         'img/mask.png'
     ],
 	audios: [
-
+        // 'audios/bgm.mp3'
     ]
 };

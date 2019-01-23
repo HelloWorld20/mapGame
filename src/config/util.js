@@ -23,7 +23,13 @@ let isStopAnimate = true;
 
 export const isWeixinBrowser = () => /micromessenger/i.test(navigator.userAgent);
 
-// export const bus = new Vue();
+export const bus = new Vue({
+    data() {
+        return {
+            musicList: {}
+        }
+    }
+});
 
 // 是否时竖屏
 // 0：竖屏、90或-90横屏

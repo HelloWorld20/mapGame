@@ -1,109 +1,17 @@
 <template>
 <div class="home">
-     <!-- :style="{'background-image': `url(${require('imgs/map.jpg')})`,}" -->
+     <div class="bgm"
+        :class="{rotaAnimate: musicState}"
+        @click="triggerBgm"
+        :style="{'background-image': `url('${bgmImg}')`}"
+     ></div>
     <div class="map" ref='map'
          :style="{'background-image': `url('${url}')`}"
         >
-        <!-- <div class="map--active">
-            <transition
-                enter-active-class="bounceIn"
-                leave-active-class="bounceOut"
-                v-for="(item, key) in game"
-                :Key=key
-            >
-                <div
-                    class="map--active-item map--active-map animated"
-                    :Key=key
-                    ref='item'
-                    :style="{
-                        'background-image': `url(${require('imgs/'+ item.img)})`,
-                        left: item.position[0] + 'px',
-                        top: item.position[1] + 'px',
-                    }"
-                    v-show="gameStep === key"
-                ></div>
-            </transition>
-        </div> -->
-        <div class="map--layer">
-                <!-- <div class="map--layer-supervise"
-                    v-if="hasSupervise"
-                    :style="{'background-image': `url(${require('imgs/layer-supervise.png')})`,}"
-                ></div>
-
-                <div class="map--layer-mayer"
-                    v-if="hasMayer"
-                    :style="{'background-image': `url(${require('imgs/layer-mayer.png')})`,}"
-                ></div>
-
-                <div class="map--layer-basic"
-                    v-if="hasBasic"
-                    :style="{'background-image': `url(${require('imgs/layer-basic.png')})`,}"
-                ></div>
-
-                <div class="map--layer-park"
-                    v-if="hasPark"
-                    :style="{'background-image': `url(${require('imgs/layer-park.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter1"
-                    v-if="hasReporter1"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter1.png')})`,}"
-                ></div> -->
-
-                <!-- <div class="map--layer-reporter2"
-                    v-if="hasReporter2"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter2.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter3"
-                    v-if="hasReporter3"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter3.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter4"
-                    v-if="hasReporter4"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter4.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter5"
-                    v-if="hasReporter5"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter5.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter6"
-                    v-if="hasReporter6"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter6.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter7"
-                    v-if="hasReporter7"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter7.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter8"
-                    v-if="hasReporter8"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter8.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter9"
-                    v-if="hasReporter9"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter9.png')})`,}"
-                ></div>
-
-                <div class="map--layer-reporter10"
-                    v-if="hasReporter10"
-                    :style="{'background-image': `url(${require('imgs/layer-reporter10.png')})`,}"
-                ></div> -->
-            <!-- </transition> -->
-        </div>
     </div>
 
     <div class="control">
-        <!-- <div class="control--handle">
-            <div class="control--handle-pre" @touchstart="preStep">上一步</div>
-            <div class="control--handle-next" @touchstart="nextStep">下一步</div>
-        </div> -->
-        <div class="control--guid">
+        <div class="control--guid" v-show="reporterState">
             <div class="control--guid-item"
                 @click="switchLayer('reporter1')"
                 :class="{inActive: !state.reporter1}"
@@ -178,6 +86,8 @@
                 :style="{'background-image': `url(${require('@/assets/img/btn-park.png')})`}"
             ></div>
             <div class="control--tab-reporter"
+                @click="showReporter"
+                :class="{inActive: !reporterState}"
                 :style="{'background-image': `url(${require('@/assets/img/btn-reporter.png')})`}"
             ></div>
         </div>
@@ -192,6 +102,7 @@ import { scrollTo, parseTransform } from '@/config/util';
 import PinchZoom from '@/lib/pinchzoom';
 import Draw from '@/config/drawImg';
 import VueRota from '@/components/childComponents/Rota.vue';
+import {Howl, Howler} from 'howler';
 
 // let gameLen = game.length;  // 游戏配置长度
 // let isAnimating = false;
@@ -214,7 +125,8 @@ let layerMap = {
     reporter10: require('imgs/layer-reporter10.png')
 }
 
-let selectedLayer = [require('imgs/map.png')]
+let selectedLayer = [require('imgs/map.png')];
+var bgm
 
 export default {
     data() {
@@ -223,6 +135,8 @@ export default {
             // gameStep: 0,    // 当前游戏步骤
             // 'Supervise', 'Mayer', 'Basic', 'Park', 'Reporter1'
             activeLayer: new Set([]),
+            bgmImg: require('imgs/btn-music-on.png'),
+            musicState: true,
             state: {
                 supervise: false,
                 mayer: false,
@@ -239,12 +153,20 @@ export default {
                 reporter9: false,
                 reporter10: false,
             },
+            reporterState: false,
             url: ''
         }
     },
     components: {
         // VueFrame,
         VueRota
+    },
+    created() {
+        bgm = new Howl({
+            src: [require('@/assets/audios/bgm.mp3')],
+            loop: true
+        });
+        bgm.play();
     },
     mounted() {
 
@@ -266,6 +188,7 @@ export default {
     },
     methods: {
         switchLayer(layer) {
+            bus.musicManager.play('bgm')
             if (this.activeLayer.has(layer)) {
                 this.activeLayer.delete(layer)
                 this.state[layer] = false;
@@ -285,14 +208,26 @@ export default {
                 return layerMap[v]
             }))
 
-
             this.drawIt(result)
         },
         drawIt(selectedLayer) {
             this.drawIns.draw(selectedLayer).then(res => {
                 this.url = res
             })
-
+        },
+        showReporter() {
+            this.reporterState = !this.reporterState
+        },
+        triggerBgm(){
+            if (bgm && bgm.playing()) {
+                this.musicState = false;
+                this.bgmImg = require('imgs/btn-music-off.png')
+                bgm.pause();
+            } else {
+                this.musicState = true;
+                this.bgmImg = require('imgs/btn-music-on.png')
+                bgm.play();
+            }
         }
     }
 }
@@ -314,6 +249,17 @@ export default {
     // overflow: auto;
     overflow: hidden;
     // -webkit-overflow-scrolling: touch;
+}
+.bgm{
+    position: absolute;
+    left: tvwV(30);
+    top: tvwV(30);
+    z-index: 999;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: tvwV(50);
+    height: tvwV(50);
 }
 .map{
     position: relative;
@@ -430,11 +376,22 @@ export default {
             height: tvwV(80);
             border-radius: tvwV(80);
         }
-
-
-
     }
+}
 
-
+.rotaAnimate {
+    transform-origin: 50%, 50%;
+    animation: rotation 3s infinite linear;
+}
+@keyframes rotation {
+    0% {
+        transform: rotate(0);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

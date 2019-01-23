@@ -1,5 +1,5 @@
 <template>
-    <section class="entry"
+    <section v-show="shown" class="entry"
         :style="{'background-image': `url(${require('@/assets/img/bg-loading.png')})`}"
     >
         <!-- <vue-loading :isStatic="true"></vue-loading> -->
@@ -11,14 +11,22 @@
 import VueRota from '@/components/childComponents/Rota';
 import VueLoading from '@/components/Loading'
 export default {
+    data() {
+        return {
+            shown: true
+        }
+    },
     components: {VueRota, VueLoading},
     methods: {
         onRota(isVertical) {
             if (!isVertical) {
+                this.shown = false;
                 // 如果是竖屏
                 setTimeout(() => {
                     this.$router.replace('Loading')
-                }, 500)
+                }, 300)
+            } else {
+                this.shown = true;
             }
         }
     }

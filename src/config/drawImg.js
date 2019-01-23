@@ -7,6 +7,7 @@ let Draw = function() {
 
 
 Draw.prototype.draw = async function(imgList) {
+    imgList = [require('imgs/map.png')].concat(imgList)
     let imgInsList = await loadImg(imgList);
     return new Promise(resolve => {
         setTimeout(() => {
