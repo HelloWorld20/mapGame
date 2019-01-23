@@ -126,7 +126,7 @@ let layerMap = {
 }
 
 let selectedLayer = [require('imgs/map.png')];
-var bgm
+var bgm, click;
 
 export default {
     data() {
@@ -166,7 +166,16 @@ export default {
             src: [require('@/assets/audios/bgm.mp3')],
             loop: true
         });
+        click = new Howl({
+            src: [require('@/assets/audios/click.mp3')]
+        })
         bgm.play();
+        bgm.onpause = function() {
+            console.log('pause')
+        }
+        bgm.onplay = function() {
+            console.log('onplay')
+        }
     },
     mounted() {
 
@@ -188,7 +197,7 @@ export default {
     },
     methods: {
         switchLayer(layer) {
-            bus.musicManager.play('bgm')
+            click.play();
             if (this.activeLayer.has(layer)) {
                 this.activeLayer.delete(layer)
                 this.state[layer] = false;
@@ -216,6 +225,7 @@ export default {
             })
         },
         showReporter() {
+            click.play();
             this.reporterState = !this.reporterState
         },
         triggerBgm(){
