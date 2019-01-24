@@ -1,10 +1,10 @@
 import Vue from 'vue';
 
-let lastPosition = {x: 0, y: 0};
-let offsetWidth = window.innerWidth >> 1;   // >> 1 位运算：除以2
-let offsetHeight = window.innerHeight >> 1;
+// let lastPosition = {x: 0, y: 0};
+// let offsetWidth = window.innerWidth >> 1;   // >> 1 位运算：除以2
+// let offsetHeight = window.innerHeight >> 1;
 
-let isStopAnimate = true;
+// let isStopAnimate = true;
 
 // function animateHandler(time) {
 //     if (isStopAnimate) return;

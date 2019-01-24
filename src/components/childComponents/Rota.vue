@@ -13,12 +13,6 @@ export default {
             shown: false
         }
     },
-    // props: {
-    //     isComponents: {
-    //         default: false,
-    //         type: Boolean
-    //     }
-    // },
     created() {
         window.addEventListener("orientationchange", this.rotationCallback, false);
         this.rotationCallback();

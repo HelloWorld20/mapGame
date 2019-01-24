@@ -15,52 +15,52 @@
             <div class="control--guid-item"
                 @click="switchLayer('reporter1')"
                 :class="{inActive: !state.reporter1}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter1.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter1.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter2')"
                 :class="{inActive: !state.reporter2}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter2.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter2.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter3')"
                 :class="{inActive: !state.reporter3}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter3.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter3.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter4')"
                 :class="{inActive: !state.reporter4}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter4.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter4.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter5')"
                 :class="{inActive: !state.reporter5}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter5.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter5.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter6')"
                 :class="{inActive: !state.reporter6}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter6.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter6.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter7')"
                 :class="{inActive: !state.reporter7}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter7.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter7.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter8')"
                 :class="{inActive: !state.reporter8}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter8.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter8.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter9')"
                 :class="{inActive: !state.reporter9}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter9.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter9.png')})`}"
             ></div>
             <div class="control--guid-item"
                 @click="switchLayer('reporter10')"
                 :class="{inActive: !state.reporter10}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter10.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter10.png')})`}"
             ></div>
         </div>
         <!-- 切换tab用切换背景图片的方式，不用多图层的方式 -->
@@ -68,44 +68,59 @@
             <div class="control--tab-supervise"
                 :class="{inActive: !state.supervise}"
                 @click="switchLayer('supervise')"
-                :style="{'background-image': `url(${require('@/assets/img/btn-supervise.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-supervise.png')})`}"
             ></div>
             <div class="control--tab-mayer"
                 :class="{inActive: !state.mayer}"
                 @click="switchLayer('mayer')"
-                :style="{'background-image': `url(${require('@/assets/img/btn-mayer.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-mayer.png')})`}"
             ></div>
             <div class="control--tab-basic"
                 :class="{inActive: !state.basic}"
                 @click="switchLayer('basic')"
-                :style="{'background-image': `url(${require('@/assets/img/btn-basic.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-basic.png')})`}"
             ></div>
             <div class="control--tab-park"
                 :class="{inActive: !state.park}"
                 @click="switchLayer('park')"
-                :style="{'background-image': `url(${require('@/assets/img/btn-park.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-park.png')})`}"
             ></div>
             <div class="control--tab-reporter"
                 @click="showReporter"
                 :class="{inActive: !reporterState}"
-                :style="{'background-image': `url(${require('@/assets/img/btn-reporter.png')})`}"
+                :style="{'background-image': `url(${require('imgs/btn-reporter.png')})`}"
             ></div>
         </div>
     </div>
-    <vue-rota :isComponents="true"></vue-rota>
+    <div class="mask" v-if="showMask && !isVertical" @touchstart="clickMask">
+        <div class="mask--icon">
+            <div class="mask--icon-left shuffleAnimate-left"
+                :style="{'background-image': `url(${require('imgs/icon-arrow.png')})`}"
+            ></div>
+            <div class="mask--icon-right shuffleAnimate-right"
+                :style="{'background-image': `url(${require('imgs/icon-arrow.png')})`}"
+            ></div>
+        </div>
+        <div class="mask--text">
+            <div class="mask--text-after"
+                :style="{'background-image': `url(${require('imgs/icon-zoom.png')})`}"
+            ></div>
+            双指缩放地图可查看详细信息
+        </div>
+    </div>
+    <vue-rota @rotation="handleRotation"></vue-rota>
 </div>
 </template>
 
 <script>
 import { game } from '@/config/config';
-import { scrollTo, parseTransform } from '@/config/util';
+// import { scrollTo, parseTransform } from '@/config/util';
 import PinchZoom from '@/lib/pinchzoom';
 import Draw from '@/config/drawImg';
 import VueRota from '@/components/childComponents/Rota.vue';
 import {Howl, Howler} from 'howler';
+import { isVertical } from '@/config/util'
 
-// let gameLen = game.length;  // 游戏配置长度
-// let isAnimating = false;
 let pz = null;// pinchzoom实例
 let timer = null;
 let layerMap = {
@@ -131,8 +146,6 @@ var bgm, click;
 export default {
     data() {
         return {
-            // game,   // 游戏配置
-            // gameStep: 0,    // 当前游戏步骤
             // 'Supervise', 'Mayer', 'Basic', 'Park', 'Reporter1'
             activeLayer: new Set([]),
             bgmImg: require('imgs/btn-music-on.png'),
@@ -154,14 +167,19 @@ export default {
                 reporter10: false,
             },
             reporterState: false,
-            url: ''
+            url: '',
+            showMask: true,
+            isVertical: false
         }
     },
     components: {
-        // VueFrame,
         VueRota
     },
     created() {
+        if ( localStorage.getItem('mask') === 'true') {
+            this.showMask = false;
+        }
+        // 音乐
         bgm = new Howl({
             src: [require('@/assets/audios/bgm.mp3')],
             loop: true
@@ -176,6 +194,7 @@ export default {
         bgm.onplay = function() {
             console.log('onplay')
         }
+
     },
     mounted() {
 
@@ -189,11 +208,11 @@ export default {
 
         // window.pz = pz;
 
-        // this.$refs.frame.$emit('start');
 
         this.drawIns = new Draw()
 
         this.drawIt(selectedLayer);
+        this.handleRotation();
     },
     methods: {
         switchLayer(layer) {
@@ -238,6 +257,13 @@ export default {
                 this.bgmImg = require('imgs/btn-music-on.png')
                 bgm.play();
             }
+        },
+        clickMask() {
+            this.showMask = false;
+            localStorage.setItem('mask', 'true')
+        },
+        handleRotation() {
+            this.isVertical = isVertical();
         }
     }
 }
@@ -248,9 +274,10 @@ export default {
 
 .inActive{
     // css变灰兼容写法
-    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 3.5+ */
-    filter: gray; /* IE6-9 */
-    -webkit-filter: grayscale(100%);
+    // filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 3.5+ */
+    // filter: gray; /* IE6-9 */
+    // -webkit-filter: grayscale(100%);
+    opacity: .5;
 }
 .home{
     position: relative;
@@ -389,6 +416,64 @@ export default {
     }
 }
 
+.mask{
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(0,0,0,.8);
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+
+    &--icon{
+        width: tvwV(180);
+        height: tvwV(180);
+        margin: tvwV(160) auto 0;
+        position: relative;
+
+        &>div{
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: tvwV(90);
+            height: tvwV(90);
+            position: absolute;
+            transform-origin: center;
+        }
+        &-left{
+            left: 0;
+            bottom: 0;
+            transform: rotate(90deg);
+        }
+        &-right{
+            right: 0;
+            top: 0;
+            transform: rotate(-90deg);
+        }
+    }
+    &--text{
+        position: relative;
+        margin-top: tvwV(108);
+        color: white;
+        font-size: tvwV(36);
+        width: 100%;
+        text-align: center;
+        transform: translateX(tvwV(50));
+
+        &-after{
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: tvwV(58);
+            height: tvwV(58);
+            position: absolute;
+            left: tvwV(350);
+            top: 0;
+
+        }
+    }
+}
+
 .rotaAnimate {
     transform-origin: 50%, 50%;
     animation: rotation 3s infinite linear;
@@ -402,6 +487,34 @@ export default {
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+.shuffleAnimate-left{
+    animation: shuffle-left 2s infinite ease-in-out;
+}
+.shuffleAnimate-right{
+    animation: shuffle-right 2s infinite ease-in-out;
+}
+@keyframes shuffle-left {
+    from, to {
+        // left: 0;
+        // bottom: 0;
+        transform: rotate(90deg) translate(0, 0)
+    }
+    50% {
+        // left: -10%;
+        // bottom: -10%;
+        transform: rotate(90deg) translate(30%, 30%)
+    }
+}
+@keyframes shuffle-right {
+    from, to {
+        // right: 0;
+        // top: 0;
+        transform: rotate(-90deg) translate(0, 0)
+    }
+    50% {
+        transform: rotate(-90deg) translate(30%, 30%)
     }
 }
 </style>
