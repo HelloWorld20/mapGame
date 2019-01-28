@@ -1,25 +1,11 @@
-// export const game = [
-//     {
-//         position: [1000, 2000],
-//         img: 'psb0.jpg'
-//     },
-//     {
-//         position: [2470, 1700],
-//         img: 'psb1.jpg'
-//     },
-//     {
-//         position: [2879, 1212],
-//         img: 'psb2.jpg'
-//     },
-//     {
-//         position: [1423, 3980],
-//         img: 'psb3.jpg'
-//     },
-//     {
-//         position: [3567, 1252],
-//         img: 'psb4.jpg'
-//     }
-// ]
+// export const extraConfig = {
+//     imgs: [
+
+//     ],
+//     audios: [
+//         // 'audios/bgm.mp3'
+//     ]
+// }
 
 export default {
     // 分享文案
@@ -32,7 +18,8 @@ export default {
 	imgs: [
         'img/bg-loading.png',
         'img/loading.gif',
-        'img/map.png',
+        'img/map.jpg',
+        'img/all.jpg',
         'img/bg-river.png',
         'img/btn-basic.png',
         'img/btn-mayer.png',
@@ -49,20 +36,20 @@ export default {
         'img/btn-reporter8.png',
         'img/btn-reporter9.png',
         'img/btn-supervise.png',
-        'img/layer-basic.png',
-        'img/layer-mayer.png',
-        'img/layer-park.png',
-        'img/layer-reporter1.png',
-        'img/layer-reporter10.png',
-        'img/layer-reporter2.png',
-        'img/layer-reporter3.png',
-        'img/layer-reporter4.png',
-        'img/layer-reporter5.png',
-        'img/layer-reporter6.png',
-        'img/layer-reporter7.png',
-        'img/layer-reporter8.png',
-        'img/layer-reporter9.png',
-        'img/layer-supervise.png',
+        'img/layer-basic.jpg',
+        'img/layer-mayer.jpg',
+        'img/layer-park.jpg',
+        'img/layer-supervise.jpg',
+        'img/layer-reporter1.jpg',
+        'img/layer-reporter10.jpg',
+        'img/layer-reporter2.jpg',
+        'img/layer-reporter3.jpg',
+        'img/layer-reporter4.jpg',
+        'img/layer-reporter5.jpg',
+        'img/layer-reporter6.jpg',
+        'img/layer-reporter7.jpg',
+        'img/layer-reporter8.jpg',
+        'img/layer-reporter9.jpg',
         'img/mask.png'
     ],
 	audios: [

@@ -1,13 +1,12 @@
 
 let Draw = function() {
-    // this.imgList = imgList;
     this.can = document.getElementById('canvas');
     this.ctx = this.can.getContext('2d')
 }
 
 
 Draw.prototype.draw = async function(imgList) {
-    imgList = [require('imgs/map.png')].concat(imgList)
+    // imgList = [require('imgs/map.jpg')].concat(imgList)
     let imgInsList = await loadImg(imgList);
     return new Promise(resolve => {
         setTimeout(() => {

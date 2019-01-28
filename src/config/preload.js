@@ -1,10 +1,9 @@
-import config from '@/config/config'
-import { inherits } from 'util';
 
 let loaded = 0;
 let totalLen = '';
 
-let Preload = function(percentageCB, loadedCB) {
+let Preload = function(config, percentageCB = new Function(), loadedCB = new Function()) {
+    this.config = config;
     this.percentageCB = percentageCB;
     this.loadedCB = loadedCB;
 }
@@ -19,11 +18,11 @@ Preload.prototype.init = function() {
 Preload.prototype.preloadImg = function() {
     // 资源写在@/config/config.js里
     window.imagesCache = [];
-    totalLen = config.imgs.length;
+    totalLen = this.config.imgs.length;
     // console.log(config)
     let percentage = 0
 
-    config.imgs.forEach( (v, i) => {
+    this.config.imgs.forEach( (v, i) => {
         let img = new Image();
 
         img.onerror = img.onload = () => {
@@ -52,7 +51,7 @@ Preload.prototype.preloadImg = function() {
 
 Preload.prototype.preloadAudio = function() {
     window.audioCache = [];
-    config.audios.forEach( (v, i) => {
+    this.config.audios.forEach( (v, i) => {
         let audio = new Audio();
 
         audio.addEventListener('canplaythrough', () => {

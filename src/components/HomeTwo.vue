@@ -13,76 +13,76 @@
     <div class="control">
         <div class="control--guid" v-show="reporterState">
             <div class="control--guid-item"
-                @click="switchLayer('reporter1')"
-                :class="{inActive: !state.reporter1}"
+                @click="clickLayer('reporter1')"
+                :class="{inActive: currentState !== 'reporter1'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter1.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter2')"
-                :class="{inActive: !state.reporter2}"
+                @click="clickLayer('reporter2')"
+                :class="{inActive: currentState !== 'reporter2'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter2.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter3')"
-                :class="{inActive: !state.reporter3}"
+                @click="clickLayer('reporter3')"
+                :class="{inActive: currentState !== 'reporter3'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter3.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter4')"
-                :class="{inActive: !state.reporter4}"
+                @click="clickLayer('reporter4')"
+                :class="{inActive: currentState !== 'reporter4'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter4.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter5')"
-                :class="{inActive: !state.reporter5}"
+                @click="clickLayer('reporter5')"
+                :class="{inActive: currentState !== 'reporter5'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter5.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter6')"
-                :class="{inActive: !state.reporter6}"
+                @click="clickLayer('reporter6')"
+                :class="{inActive: currentState !== 'reporter6'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter6.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter7')"
-                :class="{inActive: !state.reporter7}"
+                @click="clickLayer('reporter7')"
+                :class="{inActive: currentState !== 'reporter7'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter7.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter8')"
-                :class="{inActive: !state.reporter8}"
+                @click="clickLayer('reporter8')"
+                :class="{inActive: currentState !== 'reporter8'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter8.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter9')"
-                :class="{inActive: !state.reporter9}"
+                @click="clickLayer('reporter9')"
+                :class="{inActive: currentState !== 'reporter9'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter9.png')})`}"
             ></div>
             <div class="control--guid-item"
-                @click="switchLayer('reporter10')"
-                :class="{inActive: !state.reporter10}"
+                @click="clickLayer('reporter10')"
+                :class="{inActive: currentState !== 'reporter10'}"
                 :style="{'background-image': `url(${require('imgs/btn-reporter10.png')})`}"
             ></div>
         </div>
         <!-- 切换tab用切换背景图片的方式，不用多图层的方式 -->
         <div class="control--tap">
             <div class="control--tab-supervise"
-                :class="{inActive: !state.supervise}"
-                @click="switchLayer('supervise')"
+                :class="{inActive: currentState !== 'supervise'}"
+                @click="clickLayer('supervise')"
                 :style="{'background-image': `url(${require('imgs/btn-supervise.png')})`}"
             ></div>
             <div class="control--tab-mayer"
-                :class="{inActive: !state.mayer}"
-                @click="switchLayer('mayer')"
+                :class="{inActive: currentState !== 'mayer'}"
+                @click="clickLayer('mayer')"
                 :style="{'background-image': `url(${require('imgs/btn-mayer.png')})`}"
             ></div>
             <div class="control--tab-basic"
-                :class="{inActive: !state.basic}"
-                @click="switchLayer('basic')"
+                :class="{inActive: currentState !== 'basic'}"
+                @click="clickLayer('basic')"
                 :style="{'background-image': `url(${require('imgs/btn-basic.png')})`}"
             ></div>
             <div class="control--tab-park"
-                :class="{inActive: !state.park}"
-                @click="switchLayer('park')"
+                :class="{inActive: currentState !== 'park'}"
+                @click="clickLayer('park')"
                 :style="{'background-image': `url(${require('imgs/btn-park.png')})`}"
             ></div>
             <div class="control--tab-reporter"
@@ -113,142 +113,107 @@
 </template>
 
 <script>
-// import { game } from '@/config/config';
-// import { scrollTo, parseTransform } from '@/config/util';
 import PinchZoom from '@/lib/pinchzoom';
-import Draw from '@/config/drawImg';
+// import Draw from '@/config/drawImg';
 import VueRota from '@/components/childComponents/Rota.vue';
-import {Howl, Howler} from 'howler';
-import { isVertical } from '@/config/util'
+import {Howl} from 'howler';
+import { isVertical, bus } from '@/config/util';
+// import Preload from '@/config/preload';
+// import { extraConfig } from '@/config/config';
 
-let pz = null;// pinchzoom实例
 let timer = null;
+let blingCount = 0;
+let hasBling = false;
 let layerMap = {
-    supervise: require('imgs/layer-supervise.png'),
-    mayer: require('imgs/layer-mayer.png'),
-    basic: require('imgs/layer-basic.png'),
-    park: require('imgs/layer-park.png'),
-    reporter1: require('imgs/layer-reporter1.png'),
-    reporter2: require('imgs/layer-reporter2.png'),
-    reporter3: require('imgs/layer-reporter3.png'),
-    reporter4: require('imgs/layer-reporter4.png'),
-    reporter5: require('imgs/layer-reporter5.png'),
-    reporter6: require('imgs/layer-reporter6.png'),
-    reporter7: require('imgs/layer-reporter7.png'),
-    reporter8: require('imgs/layer-reporter8.png'),
-    reporter9: require('imgs/layer-reporter9.png'),
-    reporter10: require('imgs/layer-reporter10.png')
+    default: require('imgs/map.jpg'),
+    all: require('imgs/all.jpg'),
+    supervise: require('imgs/layer-supervise.jpg'),
+    mayer: require('imgs/layer-mayer.jpg'),
+    basic: require('imgs/layer-basic.jpg'),
+    park: require('imgs/layer-park.jpg'),
+    reporter1: require('imgs/layer-reporter1.jpg'),
+    reporter2: require('imgs/layer-reporter2.jpg'),
+    reporter3: require('imgs/layer-reporter3.jpg'),
+    reporter4: require('imgs/layer-reporter4.jpg'),
+    reporter5: require('imgs/layer-reporter5.jpg'),
+    reporter6: require('imgs/layer-reporter6.jpg'),
+    reporter7: require('imgs/layer-reporter7.jpg'),
+    reporter8: require('imgs/layer-reporter8.jpg'),
+    reporter9: require('imgs/layer-reporter9.jpg'),
+    reporter10: require('imgs/layer-reporter10.jpg')
 }
-
-let selectedLayer = [require('imgs/map.jpg')];
-var bgm, click;
 
 export default {
     data() {
         return {
-            // 'Supervise', 'Mayer', 'Basic', 'Park', 'Reporter1'
-            activeLayer: new Set([]),
             bgmImg: require('imgs/btn-music-on.png'),
             musicState: true,
-            state: {
-                supervise: false,
-                mayer: false,
-                basic: false,
-                park: false,
-                reporter1: false,
-                reporter2: false,
-                reporter3: false,
-                reporter4: false,
-                reporter5: false,
-                reporter6: false,
-                reporter7: false,
-                reporter8: false,
-                reporter9: false,
-                reporter10: false,
-            },
-            reporterState: false,
             url: '',
             showMask: true,
-            isVertical: false
+            isVertical: false,
+            reporterState: false,
+            currentState: ''
         }
     },
     components: {
         VueRota
     },
     created() {
-        if ( localStorage.getItem('mask') === 'true') {
+        // let preload = new Preload(extraConfig);
+        // preload.init();
+
+
+        if ( localStorage.getItem('mask') === 'true' && !location.search.includes('cache')) {
             this.showMask = false;
         }
         // 音乐
-        bgm = new Howl({
-            src: [require('@/assets/audios/bgm.mp3')],
-            loop: true
-        });
-        click = new Howl({
-            src: [require('@/assets/audios/click.mp3')]
-        })
-        bgm.play();
 
+        bus.musicList.bgm.play();
     },
     mounted() {
         let el = this.$refs['map'];
-        pz = new PinchZoom(el, {
+        new PinchZoom(el, {
             maxZoom: 8,
             minZoom: 1,
             tapZoomFactor: 4,
             drawIns: null
         });
-
+        this.switchLayer('default');
         // window.pz = pz;
-
-
-        this.drawIns = new Draw()
-
-        this.drawIt(selectedLayer);
-        this.handleRotation();
+        if (!this.showMask) {
+            this.bling();
+        }
+    },
+    watch: {
+        showMask(val) {
+            if(!val) {
+                this.bling();
+            }
+        }
     },
     methods: {
-        switchLayer(layer) {
-            click.play();
-            if (this.activeLayer.has(layer)) {
-                this.activeLayer.delete(layer)
-                this.state[layer] = false;
-            } else {
-                this.activeLayer.add(layer);
-                this.state[layer] = true;
-            }
-
-            let selectedBtn = Object.keys(this.state).filter(v => {
-                return this.state[v]
-            });
-
-            let result = [
-                require('imgs/map.jpg')
-            ]
-            result = result.concat(selectedBtn.map(v => {
-                return layerMap[v]
-            }))
-
-            this.drawIt(result)
+        clickLayer(layer) {
+            bus.musicList.click.play();
+            this.stopBling();
+            this.switchLayer(layer);
         },
-        drawIt(selectedLayer) {
-            this.drawIns.draw(selectedLayer).then(res => {
-                this.url = res
-            })
+        switchLayer(layer) {
+            this.url = layerMap[layer];
+            this.currentState = layer;
         },
         showReporter() {
-            click.play();
+            bus.musicList.click.play();
             this.reporterState = !this.reporterState
         },
         triggerBgm(){
-            if (bgm && bgm.playing()) {
+            if (bus.musicList.bgm && bus.musicList.bgm.playing()) {
                 this.musicState = false;
                 this.bgmImg = require('imgs/btn-music-off.png')
-                bgm.pause();
+                bus.musicList.bgm.pause();
             } else {
                 this.musicState = true;
                 this.bgmImg = require('imgs/btn-music-on.png')
-                bgm.play();
+                bus.musicList.bgm.play();
             }
         },
         clickMask() {
@@ -257,10 +222,38 @@ export default {
         },
         handleRotation() {
             this.isVertical = isVertical();
+        },
+        bling() {
+            if (hasBling) return;
+            hasBling = true;
+            this.switchLayer('default');
+            timer = setInterval(() => {
+                if (blingCount >= 6) {
+                    clearInterval(timer);
+                    timer = null;
+                    return;
+                }
+
+                blingCount++;
+                if (this.currentState === 'all') {
+                    this.switchLayer('default');
+                } else {
+                    this.switchLayer('all');
+                }
+            }, 500)
+        },
+        stopBling() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null
+            }
+
         }
     }
 }
 </script>
+
+
 
 <style lang="scss" scoped>
 @import '../assets/scss/extend.scss';

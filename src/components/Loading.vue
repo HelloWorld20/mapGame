@@ -49,9 +49,10 @@
 </template>
 
 <script>
-import { isVertical } from '@/config/util'
+import { isVertical, bus } from '@/config/util'
 import VueRota from '@/components/childComponents/Rota'
 import Preload from '@/config/preload';
+import config from '@/config/config';
 export default {
     data() {
         return {
@@ -59,22 +60,17 @@ export default {
             ready: false
         }
     },
-    props: {
-        // 是否只是展示而已，不loading，默认不是静态，要loading
-        isStatic: {
-            default: false,
-            type: Boolean
-        }
-    },
     components: {VueRota},
     created() {
-        let preload = new Preload(this.percentage, this.loaded);
-        if (!this.isStatic) {
-            preload.init();
-        } else {
-            this.ready = true;
-        }
-
+        let preload = new Preload(config, this.percentage, this.loaded);
+        preload.init();
+        bus.musicList.bgm = new Howl({
+            src: [require('@/assets/audios/bgm.mp3')],
+            loop: true
+        });
+        bus.musicList.click = new Howl({
+            src: [require('@/assets/audios/click.mp3')]
+        })
     },
     methods: {
         percentage(data) {
